@@ -7,6 +7,9 @@ const pool = require('./config/db');
 const authRoutes     = require('./routes/authRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const productRoutes  = require('./routes/productRoutes');
+const addressRoutes  = require('./routes/addressRoutes');
+const cartRoutes     = require('./routes/cartRoutes');
+const orderRoutes    = require('./routes/orderRoutes');
 const errorHandler   = require('./middleware/errorHandler');
 
 const app = express();
@@ -35,6 +38,9 @@ app.get('/api/health', async (req, res) => {
 app.use('/api/auth',       authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products',   productRoutes);
+app.use('/api/addresses',  addressRoutes);
+app.use('/api/cart',        cartRoutes);
+app.use('/api/orders',     orderRoutes);
 
 // Penanganan error global (harus di paling akhir)
 app.use(errorHandler);
