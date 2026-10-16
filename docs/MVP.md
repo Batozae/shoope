@@ -1,37 +1,47 @@
-# MVP Shoope (Clone Shopee)
+# MVP Shoope (Clone Shopee) - Revisi 1
 
 Aplikasi: Shopee -> Shoope
 Stack: Flutter (Dart), Express.js, MySQL (XAMPP)
+Prinsip: tiru tampilan semirip mungkin; fitur backend hanya yang inti.
 
-## Fitur MVP (in scope)
+## Fitur dengan backend (REAL)
 
-1. Auth: register, login (JWT), profil saya, logout
-2. Home: banner statis, grid kategori, daftar produk (rekomendasi)
-3. Pencarian produk + filter kategori
-4. Detail produk: gambar, harga, stok, deskripsi, rating (statis dari seed)
-5. Keranjang: tambah, ubah qty, hapus, total harga
-6. Checkout: pilih alamat, metode pembayaran (simulasi), buat order
-7. Riwayat pesanan + detail pesanan + ubah status (simulasi bayar)
-8. Profil: lihat/ubah data & alamat
+1. Auth: register, login (JWT), profil, ubah profil
+2. Beranda: daftar produk (grid 2 kolom) dengan badge diskon, badge Mall, lokasi toko
+3. Pencarian + filter kategori + sort + pagination
+4. Detail produk: galeri gambar, harga + harga coret, terjual, rating + jumlah rating, info toko
+5. Keranjang: dikelompokkan per toko, ubah qty, hapus, pilih item (checkbox, di sisi client)
+6. Checkout item terpilih: pilih alamat, metode pembayaran (simulasi), buat pesanan
+7. Pesanan: riwayat per status, detail, bayar (simulasi), batalkan, lanjutkan status (simulasi kirim/selesai)
+8. Notifikasi: daftar per kategori, tandai dibaca, badge jumlah belum dibaca
+9. Saya: ringkasan jumlah pesanan per status (Belum Bayar, Dikemas, Dikirim, Beri Penilaian), alamat saya, keluar
+
+## Tampilan statis (tanpa backend)
+
+Banner beranda, menu ikon (Pulsa & Tagihan, ShopeeFood, ShopeeVIP, dst.), strip saldo/koin,
+Shopee Live, tab Live & Video, bar VIP dan dompet di Saya, menu Pengaturan selain Alamat Saya
+dan Keluar, ikon hati wishlist (lokal saja), baris voucher, tombol chat.
+Tap pada elemen statis menampilkan snackbar "Segera hadir".
 
 ## Out of scope
 
-Chat, live streaming, voucher kompleks, payment gateway asli, notifikasi push,
-multi-seller dashboard, review upload foto.
+Chat, live streaming, voucher/koin sungguhan, payment gateway, push notification,
+varian produk, ulasan foto, wishlist tersimpan, passkey, dashboard penjual, pencarian kamera.
 
 ## Database (MySQL: shoope_db)
 
-users, addresses, categories, products, cart_items, orders, order_items
+users, addresses, categories, shops, products, product_images,
+cart_items, orders, order_items, notifications
 
 ## Fase
 
-1. Setup repo, database, Express + Auth
-2. API Produk & Kategori
-3. API Keranjang, Checkout, Pesanan
-4. Flutter: fondasi (tema, routing, API client, state) + layar Auth
-5. Flutter: Home, Pencarian, Detail Produk
-6. Flutter: Keranjang, Checkout, Pesanan, Profil
-7. Polish, README, rekam video
+1-3 (selesai): Setup + Auth, API Produk, API Alamat/Keranjang/Pesanan
+5: Backend revisi (migrasi DB, produk+toko+galeri, keranjang per toko, checkout item terpilih, notifikasi, ringkasan pesanan, ubah profil)
+4: Flutter fondasi (tema, routing, API client, state) + layar Auth
+6: Flutter Beranda, Pencarian, Detail Produk
+7: Flutter Keranjang, Checkout, Pesanan
+8: Flutter Notifikasi, Saya, Pengaturan
+9: Polish, README, rekam video, submit
 
 ## Konvensi
 

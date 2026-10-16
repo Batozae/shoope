@@ -1,7 +1,8 @@
-// Controller autentikasi (register, login, getMe)
+// Controller autentikasi (register, login, getMe, updateMe)
 const pool = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { createNotification } = require('../utils/notify');
 
 /**
  * Registrasi user baru
@@ -49,11 +50,29 @@ const register = async (req, res, next) => {
       [name, email, passwordHash]
     );
 
+    const userId = result.insertId;
+
+    // Buat 2 notifikasi sambutan setelah register berhasil
+    await createNotification(
+      pool,
+      userId,
+      'promo',
+      'Selamat Datang di Shoope! 🎉',
+      'Nikmati ribuan produk pilihan dengan harga terbaik. Yuk, mulai belanja sekarang!'
+    );
+    await createNotification(
+      pool,
+      userId,
+      'info',
+      'Akun Anda Berhasil Dibuat',
+      `Halo ${name}, akun Shoope Anda sudah aktif. Lengkapi profil dan tambahkan alamat pengiriman untuk pengalaman belanja yang lebih mudah.`
+    );
+
     return res.status(201).json({
       success: true,
       message: 'Registrasi berhasil.',
       data: {
-        id: result.insertId,
+        id: userId,
         name,
         email,
       },
@@ -161,4 +180,66 @@ const getMe = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login, getMe };
+/**
+ * Perbarui profil user (name, phone, avatar_url opsional)
+ */
+const updateMe = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const { name, phone, avatar_url } = req.body;
+
+    // Minimal name atau phone harus ada
+    if (!name && !phone && avatar_url === undefined) {
+      return res.status(400).json({
+        success: false,
+        message: 'Minimal satu field (name, phone, atau avatar_url) harus diisi.',
+      });
+    }
+
+    // Bangun SET dinamis hanya untuk field yang dikirim
+    const fields = [];
+    const params = [];
+
+    if (name !== undefined) {
+      if (!name.trim()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Name tidak boleh kosong.',
+        });
+      }
+      fields.push('name = ?');
+      params.push(name.trim());
+    }
+    if (phone !== undefined) {
+      fields.push('phone = ?');
+      params.push(phone);
+    }
+    if (avatar_url !== undefined) {
+      fields.push('avatar_url = ?');
+      params.push(avatar_url);
+    }
+
+    params.push(userId);
+
+    await pool.execute(
+      `UPDATE users SET ${fields.join(', ')} WHERE id = ?`,
+      params
+    );
+
+    // Kembalikan data terbaru tanpa password_hash
+    const [rows] = await pool.execute(
+      'SELECT id, name, email, phone, avatar_url, created_at FROM users WHERE id = ?',
+      [userId]
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: 'Profil berhasil diperbarui.',
+      data: rows[0],
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { register, login, getMe, updateMe };

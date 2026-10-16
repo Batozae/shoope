@@ -2,37 +2,64 @@
 const pool = require('../config/db');
 
 /**
- * Ambil isi keranjang user beserta info produk
+ * Ambil isi keranjang user, dikelompokkan per toko
  */
 const getCart = async (req, res, next) => {
   try {
-    const [items] = await pool.execute(
+    // Ambil semua item beserta info produk dan toko, urut shop_id lalu cart_items.id
+    const [rows] = await pool.execute(
       `SELECT
+         ci.id AS cart_item_id,
          ci.product_id, p.name, p.price, p.image_url, p.stock,
          ci.quantity,
-         (p.price * ci.quantity) AS subtotal
+         (p.price * ci.quantity) AS subtotal,
+         s.id AS shop_id, s.name AS shop_name, s.is_mall
        FROM cart_items ci
        JOIN products p ON ci.product_id = p.id
+       LEFT JOIN shops s ON p.shop_id = s.id
        WHERE ci.user_id = ?
-       ORDER BY ci.id ASC`,
+       ORDER BY s.id ASC, ci.id ASC`,
       [req.user.id]
     );
 
-    // Hitung total harga dan total item
+    // Kelompokkan item per toko
     let totalPrice = 0;
     let totalItems = 0;
-    for (const item of items) {
-      totalPrice += parseFloat(item.subtotal);
-      totalItems += item.quantity;
+    const shopMap  = new Map(); // shop_id -> { shop_id, shop_name, is_mall, items }
+
+    for (const row of rows) {
+      const key = row.shop_id ?? 0; // produk tanpa toko masuk grup 0
+
+      if (!shopMap.has(key)) {
+        shopMap.set(key, {
+          shop_id:   row.shop_id,
+          shop_name: row.shop_name,
+          is_mall:   Boolean(row.is_mall),
+          items:     [],
+        });
+      }
+
+      shopMap.get(key).items.push({
+        product_id: row.product_id,
+        name:       row.name,
+        price:      row.price,
+        image_url:  row.image_url,
+        stock:      row.stock,
+        quantity:   row.quantity,
+        subtotal:   parseFloat(row.subtotal),
+      });
+
+      totalPrice += parseFloat(row.subtotal);
+      totalItems += row.quantity;
     }
 
     return res.status(200).json({
       success: true,
       message: 'Keranjang berhasil diambil.',
       data: {
-        items,
-        total_price: totalPrice,
+        shops:       Array.from(shopMap.values()),
         total_items: totalItems,
+        total_price: totalPrice,
       },
     });
   } catch (error) {

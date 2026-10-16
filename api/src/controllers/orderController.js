@@ -1,19 +1,21 @@
 // Controller pesanan (orders)
 const pool = require('../config/db');
+const { createNotification } = require('../utils/notify');
 
 // Whitelist metode pembayaran yang diizinkan
 const ALLOWED_PAYMENT_METHODS = ['COD', 'Transfer Bank', 'E-Wallet'];
 
 /**
  * Buat pesanan baru dari isi keranjang (dalam transaksi)
+ * Body opsional: product_ids (array) — jika ada, hanya proses item tersebut
  */
 const createOrder = async (req, res, next) => {
   const conn = await pool.getConnection();
   try {
     const userId = req.user.id;
-    const { address_id, payment_method } = req.body;
+    const { address_id, payment_method, product_ids } = req.body;
 
-    // Validasi input
+    // Validasi input wajib
     if (!address_id || !payment_method) {
       return res.status(400).json({
         success: false,
@@ -42,19 +44,46 @@ const createOrder = async (req, res, next) => {
       });
     }
 
+    // Tentukan apakah pakai filter product_ids
+    const useFilter = Array.isArray(product_ids) && product_ids.length > 0;
+
     await conn.beginTransaction();
 
     // 1) Ambil cart_items + data produk dengan FOR UPDATE (kunci baris stok)
-    const [cartItems] = await conn.execute(
-      `SELECT ci.product_id, ci.quantity, p.name, p.price, p.stock
-       FROM cart_items ci
-       JOIN products p ON ci.product_id = p.id
-       WHERE ci.user_id = ?
-       FOR UPDATE`,
-      [userId]
-    );
+    let cartItems;
+    if (useFilter) {
+      const placeholders = product_ids.map(() => '?').join(', ');
+      const [rows] = await conn.execute(
+        `SELECT ci.product_id, ci.quantity, p.name, p.price, p.stock
+         FROM cart_items ci
+         JOIN products p ON ci.product_id = p.id
+         WHERE ci.user_id = ? AND ci.product_id IN (${placeholders})
+         FOR UPDATE`,
+        [userId, ...product_ids]
+      );
+      cartItems = rows;
 
-    // Jika keranjang kosong
+      // Pastikan semua product_ids yang dikirim ada di keranjang user
+      if (cartItems.length !== product_ids.length) {
+        await conn.rollback();
+        return res.status(400).json({
+          success: false,
+          message: 'Satu atau lebih product_id tidak ditemukan di keranjang.',
+        });
+      }
+    } else {
+      const [rows] = await conn.execute(
+        `SELECT ci.product_id, ci.quantity, p.name, p.price, p.stock
+         FROM cart_items ci
+         JOIN products p ON ci.product_id = p.id
+         WHERE ci.user_id = ?
+         FOR UPDATE`,
+        [userId]
+      );
+      cartItems = rows;
+    }
+
+    // Jika tidak ada item yang akan diproses
     if (cartItems.length === 0) {
       await conn.rollback();
       return res.status(400).json({
@@ -100,8 +129,25 @@ const createOrder = async (req, res, next) => {
       );
     }
 
-    // 4c) Kosongkan keranjang user
-    await conn.execute('DELETE FROM cart_items WHERE user_id = ?', [userId]);
+    // 4c) Hapus HANYA item yang diproses dari keranjang
+    if (useFilter) {
+      const placeholders = product_ids.map(() => '?').join(', ');
+      await conn.execute(
+        `DELETE FROM cart_items WHERE user_id = ? AND product_id IN (${placeholders})`,
+        [userId, ...product_ids]
+      );
+    } else {
+      await conn.execute('DELETE FROM cart_items WHERE user_id = ?', [userId]);
+    }
+
+    // 4d) Notifikasi pesanan dibuat (dalam transaksi yang sama)
+    await createNotification(
+      conn,
+      userId,
+      'pesanan',
+      'Pesanan Berhasil Dibuat',
+      `Pesanan #${orderId} senilai Rp ${totalPrice.toLocaleString('id-ID')} sedang menunggu pembayaran. Metode: ${payment_method}.`
+    );
 
     await conn.commit();
 
@@ -120,6 +166,42 @@ const createOrder = async (req, res, next) => {
     next(error);
   } finally {
     conn.release();
+  }
+};
+
+/**
+ * GET /api/orders/summary
+ * Jumlah pesanan per status milik user
+ */
+const getOrderSummary = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+
+    const [rows] = await pool.execute(
+      `SELECT
+         SUM(status = 'pending')   AS pending,
+         SUM(status = 'paid')      AS paid,
+         SUM(status = 'shipped')   AS shipped,
+         SUM(status = 'completed') AS completed
+       FROM orders
+       WHERE user_id = ?`,
+      [userId]
+    );
+
+    const summary = rows[0];
+
+    return res.status(200).json({
+      success: true,
+      message: 'Ringkasan pesanan berhasil diambil.',
+      data: {
+        pending:   parseInt(summary.pending,   10) || 0,
+        paid:      parseInt(summary.paid,      10) || 0,
+        shipped:   parseInt(summary.shipped,   10) || 0,
+        completed: parseInt(summary.completed, 10) || 0,
+      },
+    });
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -172,7 +254,7 @@ const getOrderById = async (req, res, next) => {
     const userId = req.user.id;
     const orderId = parseInt(req.params.id, 10);
 
-    // Ambil data order + alamat
+    // Ambil data order + alamat, pastikan milik user
     const [orderRows] = await pool.execute(
       `SELECT
          o.id, o.total_price, o.payment_method, o.status, o.created_at,
@@ -261,6 +343,15 @@ const payOrder = async (req, res, next) => {
       ['paid', orderId]
     );
 
+    // Notifikasi pembayaran berhasil
+    await createNotification(
+      pool,
+      userId,
+      'pesanan',
+      'Pembayaran Berhasil',
+      `Pembayaran pesanan #${orderId} berhasil dikonfirmasi. Pesanan Anda sedang diproses.`
+    );
+
     return res.status(200).json({
       success: true,
       message: 'Pembayaran berhasil. Status pesanan: paid.',
@@ -322,6 +413,15 @@ const cancelOrder = async (req, res, next) => {
       ['cancelled', orderId]
     );
 
+    // Notifikasi pembatalan (dalam transaksi)
+    await createNotification(
+      conn,
+      userId,
+      'pesanan',
+      'Pesanan Dibatalkan',
+      `Pesanan #${orderId} telah dibatalkan. Stok produk sudah dikembalikan.`
+    );
+
     await conn.commit();
 
     return res.status(200).json({
@@ -337,5 +437,66 @@ const cancelOrder = async (req, res, next) => {
   }
 };
 
-module.exports = { createOrder, getOrders, getOrderById, payOrder, cancelOrder };
+/**
+ * Majukan status pesanan: paid -> shipped, shipped -> completed (simulasi)
+ */
+const advanceOrder = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const orderId = parseInt(req.params.id, 10);
 
+    // Ambil pesanan milik user
+    const [rows] = await pool.execute(
+      'SELECT id, status FROM orders WHERE id = ? AND user_id = ?',
+      [orderId, userId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Pesanan tidak ditemukan.',
+      });
+    }
+
+    const currentStatus = rows[0].status;
+
+    // Peta transisi status yang diizinkan
+    const NEXT_STATUS = {
+      paid:    'shipped',
+      shipped: 'completed',
+    };
+
+    const nextStatus = NEXT_STATUS[currentStatus];
+
+    if (!nextStatus) {
+      return res.status(400).json({
+        success: false,
+        message: `Status tidak bisa dimajukan dari "${currentStatus}".`,
+      });
+    }
+
+    await pool.execute(
+      'UPDATE orders SET status = ? WHERE id = ?',
+      [nextStatus, orderId]
+    );
+
+    // Pesan notifikasi sesuai transisi
+    const notifMessages = {
+      shipped:   { title: 'Pesanan Sedang Dikirim', body: `Pesanan #${orderId} sedang dalam perjalanan menuju alamat Anda.` },
+      completed: { title: 'Pesanan Selesai',        body: `Pesanan #${orderId} telah selesai. Terima kasih sudah berbelanja di Shoope!` },
+    };
+
+    const notif = notifMessages[nextStatus];
+    await createNotification(pool, userId, 'pesanan', notif.title, notif.body);
+
+    return res.status(200).json({
+      success: true,
+      message: `Status pesanan berhasil dimajukan menjadi "${nextStatus}".`,
+      data: { id: orderId, status: nextStatus },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { createOrder, getOrderSummary, getOrders, getOrderById, payOrder, cancelOrder, advanceOrder };
