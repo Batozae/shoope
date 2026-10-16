@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../home/home_screen.dart';
-import '../live/live_screen.dart';
-import '../notification/notification_screen.dart';
-import '../profile/profile_screen.dart';
+
+import '../screens/home/home_screen.dart';
+import '../screens/live/live_screen.dart';
+import '../screens/notification/notification_screen.dart';
+import '../screens/profile/profile_screen.dart';
 import '../../theme/app_theme.dart';
 
 // Shell utama aplikasi dengan BottomNavigationBar 4 tab
@@ -26,10 +27,7 @@ class _MainShellState extends State<MainShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
+      body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
