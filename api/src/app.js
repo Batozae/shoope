@@ -4,8 +4,10 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const pool = require('./config/db');
-const authRoutes = require('./routes/authRoutes');
-const errorHandler = require('./middleware/errorHandler');
+const authRoutes     = require('./routes/authRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
+const productRoutes  = require('./routes/productRoutes');
+const errorHandler   = require('./middleware/errorHandler');
 
 const app = express();
 
@@ -30,7 +32,9 @@ app.get('/api/health', async (req, res) => {
 });
 
 // Routing API
-app.use('/api/auth', authRoutes);
+app.use('/api/auth',       authRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/products',   productRoutes);
 
 // Penanganan error global (harus di paling akhir)
 app.use(errorHandler);
