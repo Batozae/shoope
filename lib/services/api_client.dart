@@ -1,0 +1,136 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import '../config/api_config.dart';
+import 'token_storage.dart';
+
+// Exception kustom untuk menangani error response atau koneksi API
+class ApiException implements Exception {
+  final String message;
+  final int? statusCode;
+
+  ApiException(this.message, [this.statusCode]);
+
+  @override
+  String toString() => message;
+}
+
+// Klien HTTP untuk komunikasi dengan backend API
+class ApiClient {
+  final TokenStorage _tokenStorage = TokenStorage();
+  static const Duration _timeoutDuration = Duration(seconds: 10);
+
+  // Buat header request umum termasuk Bearer token jika ada
+  Future<Map<String, String>> _getHeaders({bool withAuth = true}) async {
+    final headers = <String, String>{
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+
+    if (withAuth) {
+      final token = await _tokenStorage.getToken();
+      if (token != null && token.isNotEmpty) {
+        headers['Authorization'] = 'Bearer $token';
+      }
+    }
+
+    return headers;
+  }
+
+  // Parse response JSON dan verifikasi status serta flag success
+  dynamic _handleResponse(http.Response response) {
+    dynamic body;
+    try {
+      body = jsonDecode(response.body);
+    } catch (_) {
+      // Jika body bukan JSON valid
+      if (response.statusCode >= 400) {
+        throw ApiException('Terjadi kesalahan pada server.', response.statusCode);
+      }
+      return null;
+    }
+
+    if (body is Map<String, dynamic>) {
+      final bool success = body['success'] == true;
+      final String message = body['message'] ?? 'Terjadi kesalahan.';
+
+      if (!success || response.statusCode >= 400) {
+        throw ApiException(message, response.statusCode);
+      }
+
+      return body['data'];
+    }
+
+    if (response.statusCode >= 400) {
+      throw ApiException('Terjadi kesalahan pada server.', response.statusCode);
+    }
+
+    return body;
+  }
+
+  // Wrapper untuk menangkap error jaringan dan timeout
+  Future<http.Response> _safeRequest(Future<http.Response> Function() requestFn) async {
+    try {
+      return await requestFn().timeout(_timeoutDuration);
+    } on SocketException {
+      throw ApiException('Tidak dapat terhubung ke server.');
+    } on TimeoutException {
+      throw ApiException('Tidak dapat terhubung ke server.');
+    } on http.ClientException {
+      throw ApiException('Tidak dapat terhubung ke server.');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Tidak dapat terhubung ke server.');
+    }
+  }
+
+  // Request GET
+  Future<dynamic> get(String endpoint, {bool withAuth = true}) async {
+    final uri = Uri.parse('$baseUrl$endpoint');
+    final response = await _safeRequest(() async {
+      final headers = await _getHeaders(withAuth: withAuth);
+      return await http.get(uri, headers: headers);
+    });
+    return _handleResponse(response);
+  }
+
+  // Request POST
+  Future<dynamic> post(String endpoint, {Map<String, dynamic>? body, bool withAuth = true}) async {
+    final uri = Uri.parse('$baseUrl$endpoint');
+    final response = await _safeRequest(() async {
+      final headers = await _getHeaders(withAuth: withAuth);
+      return await http.post(
+        uri,
+        headers: headers,
+        body: body != null ? jsonEncode(body) : null,
+      );
+    });
+    return _handleResponse(response);
+  }
+
+  // Request PUT
+  Future<dynamic> put(String endpoint, {Map<String, dynamic>? body, bool withAuth = true}) async {
+    final uri = Uri.parse('$baseUrl$endpoint');
+    final response = await _safeRequest(() async {
+      final headers = await _getHeaders(withAuth: withAuth);
+      return await http.put(
+        uri,
+        headers: headers,
+        body: body != null ? jsonEncode(body) : null,
+      );
+    });
+    return _handleResponse(response);
+  }
+
+  // Request DELETE
+  Future<dynamic> delete(String endpoint, {bool withAuth = true}) async {
+    final uri = Uri.parse('$baseUrl$endpoint');
+    final response = await _safeRequest(() async {
+      final headers = await _getHeaders(withAuth: withAuth);
+      return await http.delete(uri, headers: headers);
+    });
+    return _handleResponse(response);
+  }
+}
+
