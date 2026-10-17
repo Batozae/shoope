@@ -27,6 +27,15 @@ const register = async (req, res, next) => {
       });
     }
 
+    // Validasi format email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Format email tidak valid.',
+      });
+    }
+
     // Cek apakah email sudah terdaftar
     const [existingUsers] = await pool.execute(
       'SELECT id FROM users WHERE email = ?',

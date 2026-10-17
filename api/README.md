@@ -1,5 +1,7 @@
 # 🛒 Shoope API
 
+**INI HANYA TAHAP AWAL PERANCANGAN API UNTUK SHOOPE**
+
 Backend API untuk aplikasi **Shoope** — clone Shopee sederhana yang dibangun dengan Node.js, Express, dan MySQL.
 
 ## Prasyarat
@@ -71,7 +73,7 @@ Semua response menggunakan format standar:
 {
   "success": true,
   "message": "Pesan deskriptif",
-  "data": { }
+  "data": {}
 }
 ```
 
@@ -189,14 +191,14 @@ Cek status server.
 
 ## Tech Stack
 
-| Teknologi      | Kegunaan                        |
-| -------------- | ------------------------------- |
-| **Node.js**    | Runtime JavaScript              |
-| **Express**    | Web framework                   |
-| **MySQL**      | Database relasional             |
-| **mysql2**     | MySQL driver untuk Node.js      |
-| **bcryptjs**   | Hashing password                |
-| **jsonwebtoken** | Autentikasi JWT               |
-| **dotenv**     | Manajemen environment variable  |
-| **cors**       | Cross-Origin Resource Sharing   |
-| **nodemon**    | Auto-restart saat development   |
+| Teknologi        | Kegunaan                       |
+| ---------------- | ------------------------------ |
+| **Node.js**      | Runtime JavaScript             |
+| **Express**      | Web framework                  |
+| **MySQL**        | Database relasional            |
+| **mysql2**       | MySQL driver untuk Node.js     |
+| **bcryptjs**     | Hashing password               |
+| **jsonwebtoken** | Autentikasi JWT                |
+| **dotenv**       | Manajemen environment variable |
+| **cors**         | Cross-Origin Resource Sharing  |
+| **nodemon**      | Auto-restart saat development  |
