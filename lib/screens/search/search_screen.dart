@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../models/product.dart';
 import '../../services/api_client.dart';
 import '../../services/product_service.dart';
@@ -55,7 +56,8 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 300) {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 300) {
       if (!_isLoadingMore && !_isLoading && _currentPage < _totalPages) {
         _loadMoreProducts();
       }
@@ -93,7 +95,9 @@ class _SearchScreenState extends State<SearchScreen> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _errorMessage = e is ApiException ? e.message : 'Gagal memuat produk.';
+          _errorMessage = e is ApiException
+              ? e.message
+              : 'Gagal memuat produk.';
           _isLoading = false;
         });
       }
@@ -153,7 +157,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isPriceActive = _currentSort == 'price_asc' || _currentSort == 'price_desc';
+    final bool isPriceActive =
+        _currentSort == 'price_asc' || _currentSort == 'price_desc';
 
     return Scaffold(
       backgroundColor: AppTheme.scaffoldBackgroundColor,
@@ -170,17 +175,29 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
           child: TextField(
             controller: _searchController,
-            autofocus: widget.categoryId == null && (widget.initialQuery == null || widget.initialQuery!.isEmpty),
+            autofocus:
+                widget.categoryId == null &&
+                (widget.initialQuery == null || widget.initialQuery!.isEmpty),
             textInputAction: TextInputAction.search,
             onSubmitted: (_) => _fetchProducts(reset: true),
             style: const TextStyle(fontSize: 14),
             decoration: InputDecoration(
-              hintText: widget.title != null ? 'Cari di ${widget.title}...' : 'Cari di Shoope...',
+              hintText: widget.title != null
+                  ? 'Cari di ${widget.title}...'
+                  : 'Cari di Shoope...',
               hintStyle: TextStyle(color: Colors.grey[500], fontSize: 13),
-              prefixIcon: const Icon(Icons.search, size: 20, color: Colors.grey),
+              prefixIcon: const Icon(
+                Icons.search,
+                size: 20,
+                color: Colors.grey,
+              ),
               suffixIcon: _searchController.text.isNotEmpty
                   ? IconButton(
-                      icon: const Icon(Icons.clear, size: 18, color: Colors.grey),
+                      icon: const Icon(
+                        Icons.clear,
+                        size: 18,
+                        color: Colors.grey,
+                      ),
                       onPressed: () {
                         _searchController.clear();
                         _fetchProducts(reset: true);
@@ -232,10 +249,14 @@ class _SearchScreenState extends State<SearchScreen> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 6),
                       decoration: BoxDecoration(
-                        color: isPriceActive ? const Color(0xFFFFECE7) : Colors.grey[100],
+                        color: isPriceActive
+                            ? const Color(0xFFFFECE7)
+                            : Colors.grey[100],
                         borderRadius: BorderRadius.circular(4),
                         border: Border.all(
-                          color: isPriceActive ? AppTheme.primaryColor : Colors.transparent,
+                          color: isPriceActive
+                              ? AppTheme.primaryColor
+                              : Colors.transparent,
                         ),
                       ),
                       child: Row(
@@ -245,17 +266,25 @@ class _SearchScreenState extends State<SearchScreen> {
                             'Harga',
                             style: TextStyle(
                               fontSize: 12,
-                              fontWeight: isPriceActive ? FontWeight.bold : FontWeight.normal,
-                              color: isPriceActive ? AppTheme.primaryColor : Colors.black87,
+                              fontWeight: isPriceActive
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                              color: isPriceActive
+                                  ? AppTheme.primaryColor
+                                  : Colors.black87,
                             ),
                           ),
                           const SizedBox(width: 2),
                           Icon(
                             _currentSort == 'price_asc'
                                 ? Icons.arrow_upward
-                                : (_currentSort == 'price_desc' ? Icons.arrow_downward : Icons.swap_vert),
+                                : (_currentSort == 'price_desc'
+                                      ? Icons.arrow_downward
+                                      : Icons.swap_vert),
                             size: 14,
-                            color: isPriceActive ? AppTheme.primaryColor : Colors.grey[600],
+                            color: isPriceActive
+                                ? AppTheme.primaryColor
+                                : Colors.grey[600],
                           ),
                         ],
                       ),
@@ -267,9 +296,7 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
 
           // Konten Hasil Produk
-          Expanded(
-            child: _buildBody(),
-          ),
+          Expanded(child: _buildBody()),
         ],
       ),
     );
@@ -310,11 +337,7 @@ class _SearchScreenState extends State<SearchScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.search_off_outlined,
-              size: 64,
-              color: Colors.grey[400],
-            ),
+            Icon(Icons.search_off_outlined, size: 64, color: Colors.grey[400]),
             const SizedBox(height: 12),
             Text(
               'Produk tidak ditemukan',
@@ -327,10 +350,7 @@ class _SearchScreenState extends State<SearchScreen> {
             const SizedBox(height: 4),
             Text(
               'Coba gunakan kata kunci lain atau periksa filter.',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[500],
-              ),
+              style: TextStyle(fontSize: 12, color: Colors.grey[500]),
             ),
           ],
         ),
@@ -345,26 +365,24 @@ class _SearchScreenState extends State<SearchScreen> {
           sliver: SliverGrid(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.62,
+              childAspectRatio: 0.58,
               mainAxisSpacing: 8,
               crossAxisSpacing: 8,
             ),
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final product = _products[index];
-                return ProductCard(
-                  product: product,
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => ProductDetailScreen(productId: product.id),
-                      ),
-                    );
-                  },
-                );
-              },
-              childCount: _products.length,
-            ),
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final product = _products[index];
+              return ProductCard(
+                product: product,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          ProductDetailScreen(productId: product.id),
+                    ),
+                  );
+                },
+              );
+            }, childCount: _products.length),
           ),
         ),
 
@@ -415,4 +433,3 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 }
-

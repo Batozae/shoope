@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../theme/app_theme.dart';
+import '../address/address_list_screen.dart';
 import '../auth/login_screen.dart';
+import '../order/order_list_screen.dart';
 
 // Layar Profil Pengguna (Saya)
 class ProfileScreen extends StatelessWidget {
@@ -14,9 +16,11 @@ class ProfileScreen extends StatelessWidget {
     final user = authProvider.user;
 
     return Scaffold(
+      backgroundColor: AppTheme.scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text('Saya'),
         backgroundColor: Colors.white,
+        elevation: 0.5,
       ),
       body: SafeArea(
         child: Padding(
@@ -24,6 +28,7 @@ class ProfileScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // Kartu info user
               Card(
                 elevation: 0,
                 color: Colors.white,
@@ -70,7 +75,60 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ),
               ),
+              const SizedBox(height: 16),
+
+              // Menu navigasi: Pesanan Saya & Alamat Saya
+              Card(
+                elevation: 0,
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: const Icon(
+                        Icons.receipt_long_outlined,
+                        color: AppTheme.primaryColor,
+                      ),
+                      title: const Text(
+                        'Pesanan Saya',
+                        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+                      ),
+                      trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const OrderListScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1, indent: 56),
+                    ListTile(
+                      leading: const Icon(
+                        Icons.location_on_outlined,
+                        color: AppTheme.primaryColor,
+                      ),
+                      title: const Text(
+                        'Alamat Saya',
+                        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+                      ),
+                      trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const AddressListScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
               const Spacer(),
+
+              // Tombol Keluar
               ElevatedButton(
                 onPressed: () async {
                   await authProvider.logout();
@@ -100,4 +158,3 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 }
-

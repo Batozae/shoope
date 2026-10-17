@@ -7,6 +7,7 @@ import '../../services/product_service.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/format.dart';
 import '../cart/cart_screen.dart';
+import '../checkout/checkout_screen.dart';
 
 // Layar Detail Produk Shoope
 class ProductDetailScreen extends StatefulWidget {
@@ -270,7 +271,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
       if (isBuyNow) {
         Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const CartScreen()),
+          MaterialPageRoute(
+            builder: (_) => CheckoutScreen(productIds: [widget.productId]),
+          ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

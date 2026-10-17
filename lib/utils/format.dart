@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 // Helper format angka ke mata uang Rupiah (contoh: Rp38.400)
@@ -38,5 +39,41 @@ String formatCount(int count) {
     final formatted = jt.toStringAsFixed(1).replaceAll('.', ',');
     final clean = formatted.endsWith(',0') ? formatted.substring(0, formatted.length - 2) : formatted;
     return '${clean}JT';
+  }
+}
+
+// Helper label status pesanan dalam bahasa Indonesia
+String statusLabel(String status) {
+  switch (status.toLowerCase()) {
+    case 'pending':
+      return 'Belum Bayar';
+    case 'paid':
+      return 'Dikemas';
+    case 'shipped':
+      return 'Dikirim';
+    case 'completed':
+      return 'Selesai';
+    case 'cancelled':
+      return 'Dibatalkan';
+    default:
+      return status;
+  }
+}
+
+// Helper warna tema status pesanan
+Color statusColor(String status) {
+  switch (status.toLowerCase()) {
+    case 'pending':
+      return const Color(0xFFEE4D2D); // Oranye Shopee
+    case 'paid':
+      return const Color(0xFF1E88E5); // Biru
+    case 'shipped':
+      return const Color(0xFF00897B); // Teal
+    case 'completed':
+      return const Color(0xFF2E7D32); // Hijau
+    case 'cancelled':
+      return const Color(0xFF757575); // Abu-abu
+    default:
+      return const Color(0xFF757575);
   }
 }

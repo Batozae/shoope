@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../screens/home/home_screen.dart';
-import '../screens/live/live_screen.dart';
-import '../screens/notification/notification_screen.dart';
-import '../screens/profile/profile_screen.dart';
-import '../../theme/app_theme.dart';
+import 'home/home_screen.dart';
+import 'live/live_screen.dart';
+import 'notification/notification_screen.dart';
+import 'profile/profile_screen.dart';
+import '../theme/app_theme.dart';
 
 // Shell utama aplikasi dengan BottomNavigationBar 4 tab
 class MainShell extends StatefulWidget {

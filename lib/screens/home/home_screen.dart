@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../models/category.dart';
 import '../../models/product.dart';
 import '../../providers/cart_provider.dart';
@@ -50,8 +51,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Deteksi scroll mendekati dasar untuk infinite scroll
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 300) {
-      if (!_isLoadingMore && !_isLoadingProducts && _currentPage < _totalPages) {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 300) {
+      if (!_isLoadingMore &&
+          !_isLoadingProducts &&
+          _currentPage < _totalPages) {
         _loadMoreProducts();
       }
     }
@@ -60,10 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // Muat data awal kategori, produk, dan perbarui jumlah keranjang
   Future<void> _loadInitialData() async {
     context.read<CartProvider>().refreshCount();
-    await Future.wait([
-      _loadCategories(),
-      _loadProducts(refresh: true),
-    ]);
+    await Future.wait([_loadCategories(), _loadProducts(refresh: true)]);
   }
 
   Future<void> _loadCategories() async {
@@ -121,7 +122,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
     try {
       final nextPage = _currentPage + 1;
-      final result = await _productService.getProducts(page: nextPage, limit: 10);
+      final result = await _productService.getProducts(
+        page: nextPage,
+        limit: 10,
+      );
       if (mounted) {
         setState(() {
           _products.addAll(result.items);
@@ -141,9 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Buka halaman dan refresh keranjang saat kembali
   Future<void> _navigateTo(Widget screen) async {
-    await Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => screen),
-    );
+    await Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
     if (mounted) {
       context.read<CartProvider>().refreshCount();
     }
@@ -299,7 +301,10 @@ class _HomeScreenState extends State<HomeScreen> {
             SliverToBoxAdapter(
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 12,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(6),
@@ -314,9 +319,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildStripItem(Icons.account_balance_wallet_outlined, 'Cashback Saldo'),
+                    _buildStripItem(
+                      Icons.account_balance_wallet_outlined,
+                      'Cashback Saldo',
+                    ),
                     Container(height: 20, width: 1, color: Colors.grey[300]),
-                    _buildStripItem(Icons.monetization_on_outlined, 'Klaim Koin'),
+                    _buildStripItem(
+                      Icons.monetization_on_outlined,
+                      'Klaim Koin',
+                    ),
                     Container(height: 20, width: 1, color: Colors.grey[300]),
                     _buildStripItem(Icons.credit_card_outlined, 'SPinjam'),
                   ],
@@ -356,10 +367,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           SizedBox(height: 4),
                           Text(
                             'Gratis Ongkir & Diskon Hingga 90%',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                            ),
+                            style: TextStyle(color: Colors.white, fontSize: 12),
                           ),
                         ],
                       ),
@@ -387,9 +395,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       _buildMenuItem(Icons.phone_android, 'Pulsa & Tagihan'),
                       _buildMenuItem(Icons.fastfood_outlined, 'ShopeeFood'),
-                      _buildMenuItem(Icons.workspace_premium_outlined, 'ShopeeVIP'),
-                      _buildMenuItem(Icons.confirmation_number_outlined, 'Bagi-Bagi\nVoucher'),
-                      _buildMenuItem(Icons.flash_on_outlined, 'Belanja\nInstant'),
+                      _buildMenuItem(
+                        Icons.workspace_premium_outlined,
+                        'ShopeeVIP',
+                      ),
+                      _buildMenuItem(
+                        Icons.confirmation_number_outlined,
+                        'Bagi-Bagi\nVoucher',
+                      ),
+                      _buildMenuItem(
+                        Icons.flash_on_outlined,
+                        'Belanja\nInstant',
+                      ),
                       _buildMenuItem(Icons.movie_filter_outlined, 'Non Drama'),
                     ],
                   ),
@@ -455,7 +472,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   children: [
                                     CircleAvatar(
                                       radius: 24,
-                                      backgroundColor: AppTheme.scaffoldBackgroundColor,
+                                      backgroundColor:
+                                          AppTheme.scaffoldBackgroundColor,
                                       child: const Icon(
                                         Icons.category_outlined,
                                         color: AppTheme.primaryColor,
@@ -514,7 +532,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Padding(
                   padding: EdgeInsets.all(32.0),
                   child: Center(
-                    child: CircularProgressIndicator(color: AppTheme.primaryColor),
+                    child: CircularProgressIndicator(
+                      color: AppTheme.primaryColor,
+                    ),
                   ),
                 ),
               )
@@ -544,24 +564,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 sliver: SliverGrid(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    childAspectRatio: 0.62,
+                    childAspectRatio: 0.58,
                     mainAxisSpacing: 8,
                     crossAxisSpacing: 8,
                   ),
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final product = _products[index];
-                      return ProductCard(
-                        product: product,
-                        onTap: () {
-                          _navigateTo(
-                            ProductDetailScreen(productId: product.id),
-                          );
-                        },
-                      );
-                    },
-                    childCount: _products.length,
-                  ),
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final product = _products[index];
+                    return ProductCard(
+                      product: product,
+                      onTap: () {
+                        _navigateTo(ProductDetailScreen(productId: product.id));
+                      },
+                    );
+                  }, childCount: _products.length),
                 ),
               ),
 
