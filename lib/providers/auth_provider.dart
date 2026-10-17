@@ -101,5 +101,29 @@ class AuthProvider extends ChangeNotifier {
     _token = null;
     notifyListeners();
   }
+
+  // Perbarui profil user (name, phone)
+  Future<void> updateProfile({String? name, String? phone}) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final body = <String, dynamic>{};
+      if (name != null) body['name'] = name;
+      if (phone != null) body['phone'] = phone;
+
+      final data = await _apiClient.put(
+        '/auth/me',
+        body: body,
+        withAuth: true,
+      ) as Map<String, dynamic>;
+
+      _user = User.fromJson(data);
+      notifyListeners();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }
 

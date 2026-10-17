@@ -105,4 +105,11 @@ class OrderService {
   Future<void> advanceOrder(int id) async {
     await _apiClient.put('/orders/$id/advance', withAuth: true);
   }
+
+  // Ambil ringkasan jumlah pesanan per status milik pengguna
+  Future<OrderSummary> getOrderSummary() async {
+    final data = await _apiClient.get('/orders/summary', withAuth: true)
+        as Map<String, dynamic>;
+    return OrderSummary.fromJson(data);
+  }
 }

@@ -183,3 +183,35 @@ class OrderDetail {
   }
 }
 
+// Model ringkasan jumlah pesanan per status milik pengguna
+class OrderSummary {
+  final int pending;
+  final int paid;
+  final int shipped;
+  final int completed;
+
+  const OrderSummary({
+    this.pending = 0,
+    this.paid = 0,
+    this.shipped = 0,
+    this.completed = 0,
+  });
+
+  static int _parseInt(dynamic val, [int defaultVal = 0]) {
+    if (val == null) return defaultVal;
+    if (val is int) return val;
+    if (val is double) return val.toInt();
+    if (val is String) return int.tryParse(val) ?? defaultVal;
+    return defaultVal;
+  }
+
+  factory OrderSummary.fromJson(Map<String, dynamic> json) {
+    return OrderSummary(
+      pending: _parseInt(json['pending']),
+      paid: _parseInt(json['paid']),
+      shipped: _parseInt(json['shipped']),
+      completed: _parseInt(json['completed']),
+    );
+  }
+}
+

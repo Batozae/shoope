@@ -13,10 +13,17 @@ class User {
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
+    int parseId(dynamic val) {
+      if (val is int) return val;
+      if (val is num) return val.toInt();
+      if (val is String) return int.tryParse(val) ?? 0;
+      return 0;
+    }
+
     return User(
-      id: json['id'] as int,
-      name: json['name'] as String,
-      email: json['email'] as String,
+      id: parseId(json['id']),
+      name: json['name'] as String? ?? '',
+      email: json['email'] as String? ?? '',
       phone: json['phone'] as String?,
     );
   }
