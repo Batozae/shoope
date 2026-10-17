@@ -6,6 +6,7 @@ import '../../models/product.dart';
 import '../../providers/cart_provider.dart';
 import '../../services/api_client.dart';
 import '../../services/product_service.dart';
+import '../../theme/app_dimens.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/format.dart';
 import '../../widgets/product_card.dart';
@@ -81,6 +82,7 @@ class _CartScreenState extends State<CartScreen> {
         title: const Text('Hapus Produk'),
         content: Text(
           'Apakah kamu yakin ingin menghapus ${selectedIds.length} produk dari keranjang?',
+          style: const TextStyle(fontSize: AppDimens.fontTitle),
         ),
         actions: [
           TextButton(
@@ -90,6 +92,9 @@ class _CartScreenState extends State<CartScreen> {
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFD0011B),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppDimens.radiusSm),
+              ),
             ),
             onPressed: () => Navigator.of(ctx).pop(true),
             child: const Text('Hapus'),
@@ -137,7 +142,7 @@ class _CartScreenState extends State<CartScreen> {
         title: Text(
           'Keranjang Saya (${cartProvider.cartCount})',
           style: const TextStyle(
-            fontSize: 17,
+            fontSize: AppDimens.fontHeader,
             fontWeight: FontWeight.bold,
             color: Colors.black87,
           ),
@@ -156,13 +161,13 @@ class _CartScreenState extends State<CartScreen> {
                 style: const TextStyle(
                   color: AppTheme.primaryColor,
                   fontWeight: FontWeight.bold,
-                  fontSize: 14,
+                  fontSize: AppDimens.fontTitle,
                 ),
               ),
             ),
           // Ikon Chat
           IconButton(
-            icon: const Icon(Icons.chat_outlined, color: AppTheme.primaryColor),
+            icon: const Icon(Icons.chat_outlined, color: AppTheme.primaryColor, size: AppDimens.iconLg),
             onPressed: _showComingSoon,
           ),
         ],
@@ -219,7 +224,7 @@ class _CartScreenState extends State<CartScreen> {
           SliverToBoxAdapter(
             child: Container(
               color: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
+              padding: const EdgeInsets.symmetric(vertical: 40, horizontal: AppDimens.space24),
               child: Column(
                 children: [
                   const Icon(
@@ -227,22 +232,25 @@ class _CartScreenState extends State<CartScreen> {
                     size: 80,
                     color: Colors.grey,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppDimens.space12),
                   const Text(
                     'Keranjangmu masih kosong',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: AppDimens.fontPrice,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppDimens.space16),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.primaryColor,
                       foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppDimens.radiusSm),
+                      ),
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
+                        horizontal: AppDimens.space24,
                         vertical: 10,
                       ),
                     ),
@@ -266,20 +274,20 @@ class _CartScreenState extends State<CartScreen> {
         SliverToBoxAdapter(
           child: Container(
             color: Colors.white,
-            margin: const EdgeInsets.only(top: 12),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            margin: const EdgeInsets.only(top: AppDimens.space12),
+            padding: const EdgeInsets.symmetric(horizontal: AppDimens.pagePadding, vertical: AppDimens.space12),
             child: const Row(
               children: [
                 Icon(
                   Icons.favorite_border,
                   color: AppTheme.primaryColor,
-                  size: 18,
+                  size: AppDimens.iconMd,
                 ),
                 SizedBox(width: 6),
                 Text(
                   'Kamu Mungkin Juga Suka',
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: AppDimens.fontTitle,
                     fontWeight: FontWeight.bold,
                     color: AppTheme.primaryColor,
                   ),
@@ -292,7 +300,7 @@ class _CartScreenState extends State<CartScreen> {
         if (_isLoadingRecommendations)
           const SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.all(24.0),
+              padding: EdgeInsets.all(AppDimens.space24),
               child: Center(
                 child: CircularProgressIndicator(color: AppTheme.primaryColor),
               ),
@@ -300,13 +308,13 @@ class _CartScreenState extends State<CartScreen> {
           )
         else
           SliverPadding(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(AppDimens.space8),
             sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 childAspectRatio: 0.58,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
+                mainAxisSpacing: AppDimens.space8,
+                crossAxisSpacing: AppDimens.space8,
               ),
               delegate: SliverChildBuilderDelegate((context, index) {
                 final product = _recommendations[index];
@@ -339,14 +347,14 @@ class _CartScreenState extends State<CartScreen> {
         shop.items.every((i) => cartProvider.selectedIds.contains(i.productId));
 
     return Container(
-      margin: const EdgeInsets.only(top: 8),
+      margin: const EdgeInsets.only(top: AppDimens.space8),
       color: Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header Toko
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: AppDimens.space8, vertical: AppDimens.space4),
             child: Row(
               children: [
                 Checkbox(
@@ -358,12 +366,12 @@ class _CartScreenState extends State<CartScreen> {
                   Container(
                     margin: const EdgeInsets.only(right: 6),
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 4,
+                      horizontal: AppDimens.space4,
                       vertical: 1,
                     ),
                     decoration: BoxDecoration(
                       color: const Color(0xFFD0011B),
-                      borderRadius: BorderRadius.circular(2),
+                      borderRadius: BorderRadius.circular(AppDimens.radiusSm / 2),
                     ),
                     child: const Text(
                       'Mall',
@@ -380,13 +388,13 @@ class _CartScreenState extends State<CartScreen> {
                     shop.shopName ?? 'Toko Shoope',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 13,
+                      fontSize: AppDimens.fontBody,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const Icon(Icons.chevron_right, size: 18, color: Colors.grey),
+                const Icon(Icons.chevron_right, size: AppDimens.iconMd, color: Colors.grey),
               ],
             ),
           ),
@@ -399,7 +407,7 @@ class _CartScreenState extends State<CartScreen> {
           InkWell(
             onTap: _showComingSoon,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: AppDimens.space16, vertical: 10),
               decoration: BoxDecoration(
                 border: Border(top: BorderSide(color: Colors.grey[200]!)),
               ),
@@ -407,17 +415,17 @@ class _CartScreenState extends State<CartScreen> {
                 children: [
                   Icon(
                     Icons.confirmation_number_outlined,
-                    size: 16,
+                    size: AppDimens.iconSm,
                     color: AppTheme.primaryColor,
                   ),
-                  SizedBox(width: 8),
+                  SizedBox(width: AppDimens.space8),
                   Expanded(
                     child: Text(
                       'Tersedia Voucher Diskon s/d Rp30RB',
-                      style: TextStyle(fontSize: 11, color: Colors.black87),
+                      style: TextStyle(fontSize: AppDimens.fontCaption, color: Colors.black87),
                     ),
                   ),
-                  Icon(Icons.chevron_right, size: 16, color: Colors.grey),
+                  Icon(Icons.chevron_right, size: AppDimens.iconSm, color: Colors.grey),
                 ],
               ),
             ),
@@ -432,7 +440,7 @@ class _CartScreenState extends State<CartScreen> {
     final isSelected = cartProvider.selectedIds.contains(item.productId);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: AppDimens.space8, vertical: AppDimens.space8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -445,7 +453,7 @@ class _CartScreenState extends State<CartScreen> {
 
           // Gambar Produk 80x80
           ClipRRect(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(AppDimens.radiusSm),
             child: Image.network(
               item.imageUrl,
               width: 80,
@@ -457,6 +465,7 @@ class _CartScreenState extends State<CartScreen> {
                 color: Colors.grey[200],
                 child: const Icon(
                   Icons.broken_image_outlined,
+                  size: AppDimens.iconLg,
                   color: Colors.grey,
                 ),
               ),
@@ -475,7 +484,7 @@ class _CartScreenState extends State<CartScreen> {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontSize: 12, height: 1.3),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppDimens.space8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -484,7 +493,7 @@ class _CartScreenState extends State<CartScreen> {
                       formatRupiah(item.price),
                       style: const TextStyle(
                         color: AppTheme.primaryColor,
-                        fontSize: 13,
+                        fontSize: AppDimens.fontBody,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -493,7 +502,7 @@ class _CartScreenState extends State<CartScreen> {
                     Container(
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey[300]!),
-                        borderRadius: BorderRadius.circular(2),
+                        borderRadius: BorderRadius.circular(AppDimens.radiusSm / 2),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -526,7 +535,7 @@ class _CartScreenState extends State<CartScreen> {
                               color: item.quantity > 1
                                   ? Colors.white
                                   : Colors.grey[100],
-                              child: const Icon(Icons.remove, size: 14),
+                              child: const Icon(Icons.remove, size: AppDimens.iconSm),
                             ),
                           ),
                           Container(
@@ -580,7 +589,7 @@ class _CartScreenState extends State<CartScreen> {
                               color: item.quantity < item.stock
                                   ? Colors.white
                                   : Colors.grey[100],
-                              child: const Icon(Icons.add, size: 14),
+                              child: const Icon(Icons.add, size: AppDimens.iconSm),
                             ),
                           ),
                         ],
@@ -616,7 +625,7 @@ class _CartScreenState extends State<CartScreen> {
           InkWell(
             onTap: _showComingSoon,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: AppDimens.space16, vertical: AppDimens.space8),
               decoration: BoxDecoration(
                 border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
               ),
@@ -624,20 +633,20 @@ class _CartScreenState extends State<CartScreen> {
                 children: [
                   Icon(
                     Icons.confirmation_number_outlined,
-                    size: 16,
+                    size: AppDimens.iconSm,
                     color: AppTheme.primaryColor,
                   ),
-                  SizedBox(width: 8),
+                  SizedBox(width: AppDimens.space8),
                   Text(
                     'Voucher Shoope',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                    style: TextStyle(fontSize: AppDimens.fontCaption, fontWeight: FontWeight.w500),
                   ),
                   Spacer(),
                   Text(
                     'Gunakan/ masukkan kode',
-                    style: TextStyle(fontSize: 11, color: Colors.grey),
+                    style: TextStyle(fontSize: AppDimens.fontCaption, color: Colors.grey),
                   ),
-                  Icon(Icons.chevron_right, size: 16, color: Colors.grey),
+                  Icon(Icons.chevron_right, size: AppDimens.iconSm, color: Colors.grey),
                 ],
               ),
             ),
@@ -645,7 +654,7 @@ class _CartScreenState extends State<CartScreen> {
 
           // Baris Aksi Checkout / Hapus
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: AppDimens.space8, vertical: 6),
             child: Row(
               children: [
                 // Checkbox "Semua"
@@ -656,7 +665,7 @@ class _CartScreenState extends State<CartScreen> {
                 ),
                 const Text(
                   'Semua',
-                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: AppDimens.fontBody, fontWeight: FontWeight.w500),
                 ),
                 const Spacer(),
 
@@ -668,12 +677,12 @@ class _CartScreenState extends State<CartScreen> {
                     children: [
                       Row(
                         children: [
-                          const Text('Total: ', style: TextStyle(fontSize: 12)),
+                          const Text('Total: ', style: TextStyle(fontSize: AppDimens.fontCaption)),
                           Text(
                             formatRupiah(cartProvider.selectedTotal),
                             style: const TextStyle(
                               color: AppTheme.primaryColor,
-                              fontSize: 14,
+                              fontSize: AppDimens.fontTitle,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -693,11 +702,11 @@ class _CartScreenState extends State<CartScreen> {
                           : Colors.grey[400],
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(AppDimens.radiusSm),
                       ),
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
+                        horizontal: AppDimens.space16,
+                        vertical: AppDimens.space12,
                       ),
                     ),
                     onPressed: cartProvider.selectedCount > 0
@@ -713,7 +722,7 @@ class _CartScreenState extends State<CartScreen> {
                         : null,
                     child: Text(
                       'Checkout (${cartProvider.selectedCount})',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: AppDimens.fontTitle),
                     ),
                   ),
                 ] else ...[
@@ -725,11 +734,11 @@ class _CartScreenState extends State<CartScreen> {
                           : Colors.grey[400],
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(AppDimens.radiusSm),
                       ),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20,
-                        vertical: 12,
+                        vertical: AppDimens.space12,
                       ),
                     ),
                     onPressed: cartProvider.selectedCount > 0
@@ -737,7 +746,7 @@ class _CartScreenState extends State<CartScreen> {
                         : null,
                     child: Text(
                       'Hapus (${cartProvider.selectedCount})',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: AppDimens.fontTitle),
                     ),
                   ),
                 ],

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import '../models/product.dart';
+import '../theme/app_dimens.dart';
 import '../theme/app_theme.dart';
 import '../utils/format.dart';
 
-// Kartu produk bergaya Shopee untuk grid 2 kolom
+// Kartu produk bergaya Shopee untuk grid 2 kolom dengan dimensi visual konsisten
 class ProductCard extends StatelessWidget {
   final Product product;
   final VoidCallback? onTap;
@@ -17,12 +18,12 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 1,
+      elevation: 0.5,
       margin: EdgeInsets.zero,
       color: Colors.white,
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(AppDimens.radiusSm),
       ),
       child: InkWell(
         onTap: onTap,
@@ -54,8 +55,8 @@ class ProductCard extends StatelessWidget {
                           color: Colors.grey[100],
                           child: const Center(
                             child: SizedBox(
-                              width: 24,
-                              height: 24,
+                              width: AppDimens.iconLg,
+                              height: AppDimens.iconLg,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             ),
                           ),
@@ -69,17 +70,20 @@ class ProductCard extends StatelessWidget {
                       top: 0,
                       right: 0,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFFF1C5),
-                          borderRadius: const BorderRadius.only(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppDimens.space4,
+                          vertical: 2,
+                        ),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFFFF1C5),
+                          borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(2),
                           ),
                         ),
                         child: Text(
                           '-${product.discountPercent}%',
                           style: const TextStyle(
-                            color: Color(0xFFEE4D2D),
+                            color: AppTheme.primaryColor,
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
                           ),
@@ -92,7 +96,7 @@ class ProductCard extends StatelessWidget {
 
             // Informasi produk
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(AppDimens.space8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -106,8 +110,11 @@ class ProductCard extends StatelessWidget {
                           WidgetSpan(
                             alignment: PlaceholderAlignment.middle,
                             child: Container(
-                              margin: const EdgeInsets.only(right: 4),
-                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                              margin: const EdgeInsets.only(right: AppDimens.space4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppDimens.space4,
+                                vertical: 1,
+                              ),
                               decoration: BoxDecoration(
                                 color: const Color(0xFFD0011B),
                                 borderRadius: BorderRadius.circular(2),
@@ -127,14 +134,14 @@ class ProductCard extends StatelessWidget {
                           text: product.name,
                           style: const TextStyle(
                             color: Colors.black87,
-                            fontSize: 12,
-                            height: 1.3,
+                            fontSize: AppDimens.fontBody,
+                            height: 1.25,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: AppDimens.space4),
 
                   // Harga dan harga coret
                   Row(
@@ -144,12 +151,13 @@ class ProductCard extends StatelessWidget {
                         formatRupiah(product.price),
                         style: const TextStyle(
                           color: AppTheme.primaryColor,
-                          fontSize: 14,
+                          fontSize: AppDimens.fontTitle,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      if (product.originalPrice != null && product.originalPrice! > product.price) ...[
-                        const SizedBox(width: 4),
+                      if (product.originalPrice != null &&
+                          product.originalPrice! > product.price) ...[
+                        const SizedBox(width: AppDimens.space4),
                         Expanded(
                           child: Text(
                             formatRupiah(product.originalPrice!),
@@ -165,7 +173,7 @@ class ProductCard extends StatelessWidget {
                       ],
                     ],
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: AppDimens.space4),
 
                   // Rating dan terjual
                   Row(
@@ -183,7 +191,7 @@ class ProductCard extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      const SizedBox(width: 6),
+                      const SizedBox(width: AppDimens.space8),
                       Text(
                         '${formatSold(product.soldCount)} terjual',
                         style: TextStyle(
@@ -193,7 +201,7 @@ class ProductCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppDimens.space4),
 
                   // Lokasi toko
                   if (product.shopCity != null && product.shopCity!.isNotEmpty)
@@ -227,4 +235,3 @@ class ProductCard extends StatelessWidget {
     );
   }
 }
-

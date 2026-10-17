@@ -4,6 +4,7 @@ import '../../models/product.dart';
 import '../../providers/cart_provider.dart';
 import '../../services/api_client.dart';
 import '../../services/product_service.dart';
+import '../../theme/app_dimens.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/format.dart';
 import '../cart/cart_screen.dart';
@@ -89,7 +90,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppDimens.space16)),
       ),
       builder: (bottomSheetContext) {
         return StatefulBuilder(
@@ -97,10 +98,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             return SafeArea(
               child: Padding(
                 padding: EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 16,
-                  bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+                  left: AppDimens.space16,
+                  right: AppDimens.space16,
+                  top: AppDimens.space16,
+                  bottom: MediaQuery.of(context).viewInsets.bottom + AppDimens.space16,
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -111,7 +112,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
+                          borderRadius: BorderRadius.circular(AppDimens.radiusMd),
                           child: Image.network(
                             product.imageUrl,
                             width: 80,
@@ -121,11 +122,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               width: 80,
                               height: 80,
                               color: Colors.grey[200],
-                              child: const Icon(Icons.broken_image),
+                              child: const Icon(Icons.broken_image, size: AppDimens.iconLg),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: AppDimens.space12),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,28 +135,28 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 formatRupiah(product.price),
                                 style: const TextStyle(
                                   color: AppTheme.primaryColor,
-                                  fontSize: 18,
+                                  fontSize: AppDimens.fontHeader,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: AppDimens.space4),
                               Text(
                                 'Stok: $maxStock',
                                 style: TextStyle(
                                   color: Colors.grey[600],
-                                  fontSize: 13,
+                                  fontSize: AppDimens.fontBody,
                                 ),
                               ),
                             ],
                           ),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.close),
+                          icon: const Icon(Icons.close, size: AppDimens.iconLg),
                           onPressed: () => Navigator.of(context).pop(),
                         ),
                       ],
                     ),
-                    const Divider(height: 24),
+                    const Divider(height: AppDimens.space24),
 
                     // Baris Stepper Jumlah
                     Row(
@@ -164,7 +165,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         const Text(
                           'Jumlah',
                           style: TextStyle(
-                            fontSize: 15,
+                            fontSize: AppDimens.fontTitle,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -184,10 +185,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 height: 32,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(AppDimens.radiusSm),
                                   border: Border.all(color: Colors.grey[300]!),
                                   color: selectedQty > 1 ? Colors.white : Colors.grey[100],
                                 ),
-                                child: const Icon(Icons.remove, size: 16),
+                                child: const Icon(Icons.remove, size: AppDimens.iconSm),
                               ),
                             ),
                             Container(
@@ -201,7 +203,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               ),
                               child: Text(
                                 selectedQty.toString(),
-                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: AppDimens.fontTitle),
                               ),
                             ),
                             // Tombol Plus
@@ -218,17 +220,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 height: 32,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(AppDimens.radiusSm),
                                   border: Border.all(color: Colors.grey[300]!),
                                   color: selectedQty < maxStock ? Colors.white : Colors.grey[100],
                                 ),
-                                child: const Icon(Icons.add, size: 16),
+                                child: const Icon(Icons.add, size: AppDimens.iconSm),
                               ),
                             ),
                           ],
                         ),
                       ],
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppDimens.space24),
 
                     // Tombol Konfirmasi
                     SizedBox(
@@ -239,7 +242,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           backgroundColor: isBuyNow ? const Color(0xFFD0011B) : AppTheme.primaryColor,
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(AppDimens.radiusSm),
                           ),
                         ),
                         onPressed: () async {
@@ -248,7 +251,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         },
                         child: Text(
                           isBuyNow ? 'Beli Sekarang' : 'Konfirmasi',
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: AppDimens.fontTitle),
                         ),
                       ),
                     ),
@@ -330,7 +333,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(_errorMessage ?? 'Produk tidak ditemukan.'),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppDimens.space12),
               ElevatedButton(
                 onPressed: _loadProductDetail,
                 child: const Text('Coba Lagi'),
@@ -388,19 +391,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       ),
                       // Indikator "1/4" di pojok kanan bawah
                       Positioned(
-                        bottom: 12,
-                        right: 12,
+                        bottom: AppDimens.space12,
+                        right: AppDimens.space12,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          padding: const EdgeInsets.symmetric(horizontal: AppDimens.space8, vertical: 3),
                           decoration: BoxDecoration(
                             color: Colors.black.withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(AppDimens.space12),
                           ),
                           child: Text(
                             '${_currentImageIndex + 1}/${imageList.length}',
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 12,
+                              fontSize: AppDimens.fontCaption,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -413,7 +416,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 // 2. Bagian Harga, Diskon, Terjual & Favorite
                 Container(
                   color: Colors.white,
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(AppDimens.pagePadding),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -424,33 +427,33 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             formatRupiah(product.price),
                             style: const TextStyle(
                               color: AppTheme.primaryColor,
-                              fontSize: 22,
+                              fontSize: AppDimens.fontPriceLg,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           if (product.originalPrice != null &&
                               product.originalPrice! > product.price) ...[
-                            const SizedBox(width: 8),
+                            const SizedBox(width: AppDimens.space8),
                             Text(
                               formatRupiah(product.originalPrice!),
                               style: TextStyle(
                                 color: Colors.grey[500],
-                                fontSize: 13,
+                                fontSize: AppDimens.fontBody,
                                 decoration: TextDecoration.lineThrough,
                               ),
                             ),
                             const SizedBox(width: 6),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                              padding: const EdgeInsets.symmetric(horizontal: AppDimens.space4, vertical: 2),
                               decoration: BoxDecoration(
                                 color: const Color(0xFFFFF1C5),
-                                borderRadius: BorderRadius.circular(2),
+                                borderRadius: BorderRadius.circular(AppDimens.radiusSm / 2),
                               ),
                               child: Text(
                                 '-${product.discountPercent}%',
                                 style: const TextStyle(
                                   color: Color(0xFFEE4D2D),
-                                  fontSize: 11,
+                                  fontSize: AppDimens.fontCaption,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -461,17 +464,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             '${formatSold(product.soldCount)} Terjual',
                             style: TextStyle(
                               color: Colors.grey[600],
-                              fontSize: 12,
+                              fontSize: AppDimens.fontCaption,
                             ),
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: AppDimens.space8),
                           IconButton(
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
                             icon: Icon(
                               _isFavorite ? Icons.favorite : Icons.favorite_border,
                               color: _isFavorite ? AppTheme.primaryColor : Colors.grey[600],
-                              size: 22,
+                              size: AppDimens.iconLg,
                             ),
                             onPressed: () {
                               setState(() {
@@ -481,7 +484,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: AppDimens.space8),
 
                       // 3. Judul produk dengan badge Mall jika isMall
                       RichText(
@@ -495,7 +498,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
                                   decoration: BoxDecoration(
                                     color: const Color(0xFFD0011B),
-                                    borderRadius: BorderRadius.circular(2),
+                                    borderRadius: BorderRadius.circular(AppDimens.radiusSm / 2),
                                   ),
                                   child: const Text(
                                     'Mall',
@@ -512,7 +515,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               text: product.name,
                               style: const TextStyle(
                                 color: Colors.black87,
-                                fontSize: 15,
+                                fontSize: AppDimens.fontTitle,
                                 fontWeight: FontWeight.w500,
                                 height: 1.3,
                               ),
@@ -523,80 +526,80 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppDimens.space8),
 
                 // 4. Baris info statis jaminan
                 InkWell(
                   onTap: _showComingSoon,
                   child: Container(
                     color: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: AppDimens.pagePadding, vertical: AppDimens.space12),
                     child: Row(
                       children: [
                         const Icon(
                           Icons.verified_user_outlined,
-                          size: 16,
+                          size: AppDimens.iconSm,
                           color: AppTheme.primaryColor,
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppDimens.space8),
                         Expanded(
                           child: Text(
                             '15 Hari Pengembalian • 100% Original • COD',
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: AppDimens.fontCaption,
                               color: Colors.grey[800],
                             ),
                           ),
                         ),
                         const Icon(
                           Icons.chevron_right,
-                          size: 18,
+                          size: AppDimens.iconMd,
                           color: Colors.grey,
                         ),
                       ],
                     ),
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppDimens.space8),
 
                 // 5. Baris Rating Penilaian Produk
                 Container(
                   color: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: AppDimens.pagePadding, vertical: AppDimens.space12),
                   child: Row(
                     children: [
                       Text(
                         product.rating.toStringAsFixed(1),
                         style: const TextStyle(
-                          fontSize: 14,
+                          fontSize: AppDimens.fontTitle,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(width: 4),
-                      const Icon(Icons.star, size: 14, color: Color(0xFFFFB800)),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppDimens.space4),
+                      const Icon(Icons.star, size: AppDimens.iconSm, color: Color(0xFFFFB800)),
+                      const SizedBox(width: AppDimens.space8),
                       Text(
                         'Penilaian Produk (${formatCount(product.ratingCount)})',
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: AppDimens.fontBody,
                           color: Colors.grey[700],
                         ),
                       ),
                       const Spacer(),
                       const Icon(
                         Icons.chevron_right,
-                        size: 18,
+                        size: AppDimens.iconMd,
                         color: Colors.grey,
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppDimens.space8),
 
                 // 6. Kartu Toko
                 Container(
                   color: Colors.white,
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(AppDimens.pagePadding),
                   child: Row(
                     children: [
                       CircleAvatar(
@@ -605,10 +608,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         child: const Icon(
                           Icons.storefront_outlined,
                           color: AppTheme.primaryColor,
-                          size: 26,
+                          size: AppDimens.iconMenu,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppDimens.space12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -617,11 +620,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               children: [
                                 if (product.isMall) ...[
                                   Container(
-                                    margin: const EdgeInsets.only(right: 4),
-                                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                                    margin: const EdgeInsets.only(right: AppDimens.space4),
+                                    padding: const EdgeInsets.symmetric(horizontal: AppDimens.space4, vertical: 1),
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFD0011B),
-                                      borderRadius: BorderRadius.circular(2),
+                                      borderRadius: BorderRadius.circular(AppDimens.radiusSm / 2),
                                     ),
                                     child: const Text(
                                       'Mall',
@@ -638,7 +641,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                     product.shopName ?? 'Toko Resmi',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 14,
+                                      fontSize: AppDimens.fontTitle,
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -646,13 +649,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: AppDimens.space4),
                             if (product.shopCity != null && product.shopCity!.isNotEmpty)
                               Row(
                                 children: [
                                   Icon(
                                     Icons.location_on_outlined,
-                                    size: 12,
+                                    size: AppDimens.iconSm,
                                     color: Colors.grey[600],
                                   ),
                                   const SizedBox(width: 2),
@@ -660,7 +663,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                     product.shopCity!,
                                     style: TextStyle(
                                       color: Colors.grey[600],
-                                      fontSize: 12,
+                                      fontSize: AppDimens.fontCaption,
                                     ),
                                   ),
                                 ],
@@ -671,30 +674,30 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppDimens.space8),
 
                 // 7. Bagian Deskripsi Produk
                 Container(
                   width: double.infinity,
                   color: Colors.white,
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(AppDimens.pagePadding),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
                         'Deskripsi Produk',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: AppDimens.fontTitle,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppDimens.space8),
                       Text(
                         product.description != null && product.description!.isNotEmpty
                             ? product.description!
                             : 'Tidak ada deskripsi produk.',
                         style: const TextStyle(
-                          fontSize: 13,
+                          fontSize: AppDimens.fontBody,
                           height: 1.5,
                           color: Colors.black87,
                         ),
@@ -709,9 +712,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
           // Tombol Melayang Atas (Back & Cart)
           Positioned(
-            top: MediaQuery.of(context).padding.top + 8,
-            left: 12,
-            right: 12,
+            top: MediaQuery.of(context).padding.top + AppDimens.space8,
+            left: AppDimens.pagePadding,
+            right: AppDimens.pagePadding,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -721,7 +724,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   radius: 18,
                   child: IconButton(
                     padding: EdgeInsets.zero,
-                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 20),
+                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: AppDimens.iconMd),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ),
@@ -740,7 +743,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             icon: const Icon(
                               Icons.shopping_cart_outlined,
                               color: Colors.white,
-                              size: 20,
+                              size: AppDimens.iconMd,
                             ),
                             onPressed: () {
                               Navigator.of(context).push(
@@ -760,8 +763,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 shape: BoxShape.circle,
                               ),
                               constraints: const BoxConstraints(
-                                minWidth: 16,
-                                minHeight: 16,
+                                minWidth: AppDimens.iconSm,
+                                minHeight: AppDimens.iconSm,
                               ),
                               child: Center(
                                 child: Text(
@@ -811,7 +814,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
-                    Icon(Icons.chat_outlined, size: 20, color: Color(0xFF00BFA5)),
+                    Icon(Icons.chat_outlined, size: AppDimens.iconMd, color: Color(0xFF00BFA5)),
                     SizedBox(height: 2),
                     Text(
                       'Chat Sekarang',
@@ -836,7 +839,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     isOutOfStock ? 'Stok Habis' : 'Masukkan Keranjang',
                     style: TextStyle(
                       color: isOutOfStock ? Colors.grey[600] : AppTheme.primaryColor,
-                      fontSize: 13,
+                      fontSize: AppDimens.fontBody,
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.center,
@@ -856,7 +859,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     isOutOfStock ? 'Stok Habis' : 'Beli Sekarang',
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 13,
+                      fontSize: AppDimens.fontBody,
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.center,

@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import '../../models/product.dart';
 import '../../services/api_client.dart';
 import '../../services/product_service.dart';
+import '../../theme/app_dimens.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/product_card.dart';
 import '../product/product_detail_screen.dart';
 
-// Layar Pencarian Produk dengan Filter Sort dan Kategori
+// Layar Pencarian Produk dengan Filter Sort dan Kategori (dimensi visual konsisten)
 class SearchScreen extends StatefulWidget {
   final String? initialQuery;
   final int? categoryId;
@@ -168,10 +169,10 @@ class _SearchScreenState extends State<SearchScreen> {
         elevation: 0.5,
         title: Container(
           height: 38,
-          margin: const EdgeInsets.only(right: 12),
+          margin: const EdgeInsets.only(right: AppDimens.pagePadding),
           decoration: BoxDecoration(
             color: Colors.grey[100],
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(AppDimens.radiusSm),
           ),
           child: TextField(
             controller: _searchController,
@@ -180,22 +181,25 @@ class _SearchScreenState extends State<SearchScreen> {
                 (widget.initialQuery == null || widget.initialQuery!.isEmpty),
             textInputAction: TextInputAction.search,
             onSubmitted: (_) => _fetchProducts(reset: true),
-            style: const TextStyle(fontSize: 14),
+            style: const TextStyle(fontSize: AppDimens.fontTitle),
             decoration: InputDecoration(
               hintText: widget.title != null
                   ? 'Cari di ${widget.title}...'
                   : 'Cari di Shoope...',
-              hintStyle: TextStyle(color: Colors.grey[500], fontSize: 13),
+              hintStyle: TextStyle(
+                color: Colors.grey[500],
+                fontSize: AppDimens.fontBody,
+              ),
               prefixIcon: const Icon(
                 Icons.search,
-                size: 20,
+                size: AppDimens.iconMd,
                 color: Colors.grey,
               ),
               suffixIcon: _searchController.text.isNotEmpty
                   ? IconButton(
                       icon: const Icon(
                         Icons.clear,
-                        size: 18,
+                        size: AppDimens.iconSm,
                         color: Colors.grey,
                       ),
                       onPressed: () {
@@ -205,6 +209,8 @@ class _SearchScreenState extends State<SearchScreen> {
                     )
                   : null,
               border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(vertical: 9),
             ),
             onChanged: (text) {
@@ -218,7 +224,10 @@ class _SearchScreenState extends State<SearchScreen> {
           // Baris filter sort
           Container(
             color: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDimens.pagePadding,
+              vertical: AppDimens.space8,
+            ),
             child: Row(
               children: [
                 // Terbaru
@@ -229,7 +238,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     onTap: () => _changeSort('newest'),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppDimens.space8),
 
                 // Terlaris
                 Expanded(
@@ -239,20 +248,20 @@ class _SearchScreenState extends State<SearchScreen> {
                     onTap: () => _changeSort('popular'),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppDimens.space8),
 
                 // Harga (dengan ikon panah naik/turun)
                 Expanded(
                   child: InkWell(
                     onTap: _togglePriceSort,
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(AppDimens.radiusSm),
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 6),
                       decoration: BoxDecoration(
                         color: isPriceActive
                             ? const Color(0xFFFFECE7)
                             : Colors.grey[100],
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(AppDimens.radiusSm),
                         border: Border.all(
                           color: isPriceActive
                               ? AppTheme.primaryColor
@@ -281,7 +290,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                 : (_currentSort == 'price_desc'
                                       ? Icons.arrow_downward
                                       : Icons.swap_vert),
-                            size: 14,
+                            size: AppDimens.iconSm,
                             color: isPriceActive
                                 ? AppTheme.primaryColor
                                 : Colors.grey[600],
@@ -312,7 +321,7 @@ class _SearchScreenState extends State<SearchScreen> {
     if (_errorMessage != null) {
       return Center(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.all(AppDimens.space24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -321,7 +330,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 textAlign: TextAlign.center,
                 style: const TextStyle(color: Colors.grey),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppDimens.space12),
               ElevatedButton(
                 onPressed: () => _fetchProducts(reset: true),
                 child: const Text('Coba Lagi'),
@@ -338,7 +347,7 @@ class _SearchScreenState extends State<SearchScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.search_off_outlined, size: 64, color: Colors.grey[400]),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppDimens.space12),
             Text(
               'Produk tidak ditemukan',
               style: TextStyle(
@@ -347,7 +356,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 fontWeight: FontWeight.w500,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppDimens.space4),
             Text(
               'Coba gunakan kata kunci lain atau periksa filter.',
               style: TextStyle(fontSize: 12, color: Colors.grey[500]),
@@ -361,13 +370,13 @@ class _SearchScreenState extends State<SearchScreen> {
       controller: _scrollController,
       slivers: [
         SliverPadding(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(AppDimens.space8),
           sliver: SliverGrid(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               childAspectRatio: 0.58,
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
+              mainAxisSpacing: AppDimens.space8,
+              crossAxisSpacing: AppDimens.space8,
             ),
             delegate: SliverChildBuilderDelegate((context, index) {
               final product = _products[index];
@@ -390,7 +399,7 @@ class _SearchScreenState extends State<SearchScreen> {
         if (_isLoadingMore)
           const SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
+              padding: EdgeInsets.symmetric(vertical: AppDimens.space16),
               child: Center(
                 child: CircularProgressIndicator(
                   color: AppTheme.primaryColor,
@@ -410,12 +419,12 @@ class _SearchScreenState extends State<SearchScreen> {
   }) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(4),
+      borderRadius: BorderRadius.circular(AppDimens.radiusSm),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 6),
         decoration: BoxDecoration(
           color: isActive ? const Color(0xFFFFECE7) : Colors.grey[100],
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(AppDimens.radiusSm),
           border: Border.all(
             color: isActive ? AppTheme.primaryColor : Colors.transparent,
           ),

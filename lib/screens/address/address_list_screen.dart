@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../models/address.dart';
 import '../../services/address_service.dart';
 import '../../services/api_client.dart';
+import '../../theme/app_dimens.dart';
 import '../../theme/app_theme.dart';
 import 'address_form_screen.dart';
 
@@ -61,7 +62,10 @@ class _AddressListScreenState extends State<AddressListScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Hapus Alamat'),
-        content: Text('Apakah kamu yakin ingin menghapus alamat penerima "${address.recipientName}"?'),
+        content: Text(
+          'Apakah kamu yakin ingin menghapus alamat penerima "${address.recipientName}"?',
+          style: const TextStyle(fontSize: AppDimens.fontTitle),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
@@ -70,6 +74,9 @@ class _AddressListScreenState extends State<AddressListScreen> {
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFD0011B),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppDimens.radiusSm),
+              ),
             ),
             onPressed: () => Navigator.of(ctx).pop(true),
             child: const Text('Hapus'),
@@ -121,21 +128,21 @@ class _AddressListScreenState extends State<AddressListScreen> {
       body: _buildBody(),
       bottomNavigationBar: Container(
         color: Colors.white,
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppDimens.pagePadding),
         child: SizedBox(
-          height: 48,
+          height: 44,
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.primaryColor,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(AppDimens.radiusSm),
               ),
             ),
-            icon: const Icon(Icons.add_location_alt_outlined),
+            icon: const Icon(Icons.add_location_alt_outlined, size: AppDimens.iconMd),
             label: const Text(
               'Tambah Alamat Baru',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: AppDimens.fontTitle, fontWeight: FontWeight.bold),
             ),
             onPressed: () async {
               final result = await Navigator.of(context).push(
@@ -161,7 +168,7 @@ class _AddressListScreenState extends State<AddressListScreen> {
     if (_errorMessage != null) {
       return Center(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.all(AppDimens.space24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -170,7 +177,7 @@ class _AddressListScreenState extends State<AddressListScreen> {
                 textAlign: TextAlign.center,
                 style: const TextStyle(color: Colors.grey),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppDimens.space12),
               ElevatedButton(
                 onPressed: _loadAddresses,
                 child: const Text('Coba Lagi'),
@@ -191,11 +198,11 @@ class _AddressListScreenState extends State<AddressListScreen> {
               size: 72,
               color: Colors.grey[400],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppDimens.space12),
             Text(
               'Belum ada alamat',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: AppDimens.fontPrice,
                 fontWeight: FontWeight.bold,
                 color: Colors.grey[700],
               ),
@@ -203,7 +210,7 @@ class _AddressListScreenState extends State<AddressListScreen> {
             const SizedBox(height: 6),
             Text(
               'Tambahkan alamat pengiriman untuk memudahkan checkout.',
-              style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+              style: TextStyle(fontSize: AppDimens.fontCaption, color: Colors.grey[500]),
               textAlign: TextAlign.center,
             ),
           ],
@@ -215,9 +222,9 @@ class _AddressListScreenState extends State<AddressListScreen> {
       color: AppTheme.primaryColor,
       onRefresh: _loadAddresses,
       child: ListView.separated(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppDimens.pagePadding),
         itemCount: _addresses.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 10),
+        separatorBuilder: (_, __) => const SizedBox(height: AppDimens.space8),
         itemBuilder: (context, index) {
           final address = _addresses[index];
           return Card(
@@ -225,7 +232,7 @@ class _AddressListScreenState extends State<AddressListScreen> {
             margin: EdgeInsets.zero,
             color: Colors.white,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(AppDimens.radiusMd),
               side: BorderSide(
                 color: address.isDefault ? AppTheme.primaryColor : Colors.grey[200]!,
                 width: address.isDefault ? 1.2 : 1,
@@ -235,9 +242,9 @@ class _AddressListScreenState extends State<AddressListScreen> {
               onTap: widget.selectMode
                   ? () => Navigator.of(context).pop(address)
                   : null,
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(AppDimens.radiusMd),
               child: Padding(
-                padding: const EdgeInsets.all(14.0),
+                padding: const EdgeInsets.all(AppDimens.pagePadding),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -254,15 +261,15 @@ class _AddressListScreenState extends State<AddressListScreen> {
                                     address.recipientName,
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 15,
+                                      fontSize: AppDimens.fontTitle,
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
+                                  const SizedBox(width: AppDimens.space8),
                                   Text(
                                     '(${address.phone})',
                                     style: TextStyle(
                                       color: Colors.grey[600],
-                                      fontSize: 13,
+                                      fontSize: AppDimens.fontBody,
                                     ),
                                   ),
                                 ],
@@ -270,14 +277,14 @@ class _AddressListScreenState extends State<AddressListScreen> {
                               const SizedBox(height: 6),
                               Text(
                                 address.fullAddress,
-                                style: const TextStyle(fontSize: 13, height: 1.3),
+                                style: const TextStyle(fontSize: AppDimens.fontBody, height: 1.3),
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: AppDimens.space4),
                               Text(
                                 '${address.city}, ${address.postalCode}',
                                 style: TextStyle(
                                   color: Colors.grey[600],
-                                  fontSize: 12,
+                                  fontSize: AppDimens.fontCaption,
                                 ),
                               ),
                             ],
@@ -285,19 +292,19 @@ class _AddressListScreenState extends State<AddressListScreen> {
                         ),
                         // Ikon Hapus Alamat
                         IconButton(
-                          icon: const Icon(Icons.delete_outline, color: Colors.red),
+                          icon: const Icon(Icons.delete_outline, color: Colors.red, size: AppDimens.iconMd),
                           onPressed: () => _confirmDelete(address),
                         ),
                       ],
                     ),
                     if (address.isDefault) ...[
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppDimens.space8),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           color: const Color(0xFFFFECE7),
                           border: Border.all(color: AppTheme.primaryColor),
-                          borderRadius: BorderRadius.circular(2),
+                          borderRadius: BorderRadius.circular(AppDimens.radiusSm / 2),
                         ),
                         child: const Text(
                           'Utama',

@@ -5,13 +5,14 @@ import '../../models/category.dart';
 import '../../models/product.dart';
 import '../../providers/cart_provider.dart';
 import '../../services/product_service.dart';
+import '../../theme/app_dimens.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/product_card.dart';
 import '../cart/cart_screen.dart';
 import '../product/product_detail_screen.dart';
 import '../search/search_screen.dart';
 
-// Layar Beranda utama aplikasi Shoope
+// Layar Beranda utama aplikasi Shoope dengan ukuran visual konsisten
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -178,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
               elevation: 0,
               expandedHeight: 0,
               toolbarHeight: 60,
-              titleSpacing: 12,
+              titleSpacing: AppDimens.pagePadding,
               title: Row(
                 children: [
                   // Kotak pencarian putih
@@ -192,22 +193,22 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(AppDimens.radiusSm),
                         ),
                         child: Row(
                           children: [
                             const Icon(
                               Icons.search,
                               color: AppTheme.primaryColor,
-                              size: 20,
+                              size: AppDimens.iconMd,
                             ),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: AppDimens.space8),
                             Expanded(
                               child: Text(
                                 'Cari di Shoope...',
                                 style: TextStyle(
                                   color: Colors.grey[500],
-                                  fontSize: 13,
+                                  fontSize: AppDimens.fontBody,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -219,7 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               icon: const Icon(
                                 Icons.camera_alt_outlined,
                                 color: Colors.grey,
-                                size: 20,
+                                size: AppDimens.iconMd,
                               ),
                               onPressed: _showComingSoon,
                             ),
@@ -228,7 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: AppDimens.space8),
 
                   // Ikon Keranjang dengan badge
                   Consumer<CartProvider>(
@@ -242,7 +243,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             icon: const Icon(
                               Icons.shopping_cart_outlined,
                               color: Colors.white,
-                              size: 24,
+                              size: AppDimens.iconLg,
                             ),
                             onPressed: () {
                               _navigateTo(const CartScreen());
@@ -280,7 +281,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppDimens.space12),
 
                   // Ikon Chat
                   IconButton(
@@ -289,7 +290,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     icon: const Icon(
                       Icons.chat_outlined,
                       color: Colors.white,
-                      size: 24,
+                      size: AppDimens.iconLg,
                     ),
                     onPressed: _showComingSoon,
                   ),
@@ -300,10 +301,13 @@ class _HomeScreenState extends State<HomeScreen> {
             // Strip 3 kolom statis
             SliverToBoxAdapter(
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                margin: const EdgeInsets.symmetric(
+                  horizontal: AppDimens.pagePadding,
+                  vertical: AppDimens.space8,
+                ),
                 padding: const EdgeInsets.symmetric(
                   vertical: 10,
-                  horizontal: 12,
+                  horizontal: AppDimens.space12,
                 ),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -338,7 +342,10 @@ class _HomeScreenState extends State<HomeScreen> {
             // Banner Promo Statis
             SliverToBoxAdapter(
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                margin: const EdgeInsets.symmetric(
+                  horizontal: AppDimens.pagePadding,
+                  vertical: AppDimens.space4,
+                ),
                 height: 100,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
@@ -346,9 +353,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(AppDimens.radiusMd),
                 ),
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppDimens.space16),
                 child: Row(
                   children: [
                     Expanded(
@@ -360,14 +367,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             'PROMO SPESIAL HARI INI!',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 16,
+                              fontSize: AppDimens.fontPrice,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 4),
+                          SizedBox(height: AppDimens.space4),
                           Text(
                             'Gratis Ongkir & Diskon Hingga 90%',
-                            style: TextStyle(color: Colors.white, fontSize: 12),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
                           ),
                         ],
                       ),
@@ -386,11 +396,13 @@ class _HomeScreenState extends State<HomeScreen> {
             SliverToBoxAdapter(
               child: Container(
                 color: Colors.white,
-                margin: const EdgeInsets.only(top: 8),
-                padding: const EdgeInsets.symmetric(vertical: 12),
+                margin: const EdgeInsets.only(top: AppDimens.space8),
+                padding: const EdgeInsets.symmetric(vertical: AppDimens.space12),
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimens.pagePadding,
+                  ),
                   child: Row(
                     children: [
                       _buildMenuItem(Icons.phone_android, 'Pulsa & Tagihan'),
@@ -418,17 +430,19 @@ class _HomeScreenState extends State<HomeScreen> {
             SliverToBoxAdapter(
               child: Container(
                 color: Colors.white,
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                padding: const EdgeInsets.symmetric(vertical: 12),
+                margin: const EdgeInsets.symmetric(vertical: AppDimens.space8),
+                padding: const EdgeInsets.symmetric(vertical: AppDimens.space12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: AppDimens.pagePadding,
+                      ),
                       child: Text(
                         'KATEGORI',
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: AppDimens.fontBody,
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
@@ -444,7 +458,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       )
                     else if (_categories.isEmpty)
                       const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: AppDimens.pagePadding,
+                        ),
                         child: Text(
                           'Kategori tidak tersedia',
                           style: TextStyle(color: Colors.grey, fontSize: 12),
@@ -453,7 +469,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     else
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppDimens.pagePadding,
+                        ),
                         child: Row(
                           children: _categories.map((cat) {
                             return GestureDetector(
@@ -467,7 +485,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               },
                               child: Container(
                                 width: 72,
-                                margin: const EdgeInsets.only(right: 8),
+                                margin: const EdgeInsets.only(
+                                  right: AppDimens.space8,
+                                ),
                                 child: Column(
                                   children: [
                                     CircleAvatar(
@@ -477,7 +497,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: const Icon(
                                         Icons.category_outlined,
                                         color: AppTheme.primaryColor,
-                                        size: 24,
+                                        size: AppDimens.iconLg,
                                       ),
                                     ),
                                     const SizedBox(height: 6),
@@ -504,19 +524,19 @@ class _HomeScreenState extends State<HomeScreen> {
             SliverToBoxAdapter(
               child: Container(
                 color: Colors.white,
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(AppDimens.pagePadding),
                 child: const Row(
                   children: [
                     Icon(
                       Icons.recommend,
                       color: AppTheme.primaryColor,
-                      size: 18,
+                      size: AppDimens.iconSm,
                     ),
                     SizedBox(width: 6),
                     Text(
                       'Rekomendasi Untukmu',
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: AppDimens.fontTitle,
                         fontWeight: FontWeight.bold,
                         color: AppTheme.primaryColor,
                       ),
@@ -549,7 +569,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         textAlign: TextAlign.center,
                         style: const TextStyle(color: Colors.grey),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppDimens.space12),
                       ElevatedButton(
                         onPressed: () => _loadProducts(refresh: true),
                         child: const Text('Coba Lagi'),
@@ -560,13 +580,16 @@ class _HomeScreenState extends State<HomeScreen> {
               )
             else ...[
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppDimens.space8,
+                  vertical: AppDimens.space8,
+                ),
                 sliver: SliverGrid(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     childAspectRatio: 0.58,
-                    mainAxisSpacing: 8,
-                    crossAxisSpacing: 8,
+                    mainAxisSpacing: AppDimens.space8,
+                    crossAxisSpacing: AppDimens.space8,
                   ),
                   delegate: SliverChildBuilderDelegate((context, index) {
                     final product = _products[index];
@@ -584,7 +607,9 @@ class _HomeScreenState extends State<HomeScreen> {
               if (_isLoadingMore)
                 const SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                    padding: EdgeInsets.symmetric(
+                      vertical: AppDimens.space16,
+                    ),
                     child: Center(
                       child: CircularProgressIndicator(
                         color: AppTheme.primaryColor,
@@ -606,11 +631,14 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 18, color: AppTheme.primaryColor),
-          const SizedBox(width: 4),
+          Icon(icon, size: AppDimens.iconSm, color: AppTheme.primaryColor),
+          const SizedBox(width: AppDimens.space4),
           Text(
             label,
-            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+            style: const TextStyle(
+              fontSize: AppDimens.fontCaption,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       ),
@@ -622,13 +650,17 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: _showComingSoon,
       child: Container(
         width: 76,
-        padding: const EdgeInsets.symmetric(horizontal: 4),
+        padding: const EdgeInsets.symmetric(horizontal: AppDimens.space4),
         child: Column(
           children: [
             CircleAvatar(
               radius: 20,
               backgroundColor: const Color(0xFFFFF0EC),
-              child: Icon(icon, color: AppTheme.primaryColor, size: 22),
+              child: Icon(
+                icon,
+                color: AppTheme.primaryColor,
+                size: AppDimens.iconMenu,
+              ),
             ),
             const SizedBox(height: 6),
             Text(

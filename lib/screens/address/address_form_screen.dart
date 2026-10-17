@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../services/address_service.dart';
 import '../../services/api_client.dart';
+import '../../theme/app_dimens.dart';
 import '../../theme/app_theme.dart';
 
 // Layar formulir penambahan alamat pengiriman baru
@@ -94,7 +95,7 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
         elevation: 0.5,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(AppDimens.space16),
         child: Form(
           key: _formKey,
           child: Column(
@@ -104,10 +105,10 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
                 elevation: 0,
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(AppDimens.radiusMd),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(AppDimens.space16),
                   child: Column(
                     children: [
                       // Nama Penerima
@@ -125,7 +126,7 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppDimens.space16),
 
                       // Nomor Telepon
                       TextFormField(
@@ -143,7 +144,7 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppDimens.space16),
 
                       // Alamat Lengkap
                       TextFormField(
@@ -161,7 +162,7 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppDimens.space16),
 
                       // Kota
                       TextFormField(
@@ -178,7 +179,7 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppDimens.space16),
 
                       // Kode Pos
                       TextFormField(
@@ -200,19 +201,19 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppDimens.space16),
 
               // Switch Jadikan Alamat Utama
               Card(
                 elevation: 0,
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(AppDimens.radiusMd),
                 ),
                 child: SwitchListTile(
                   title: const Text(
                     'Atur sebagai Alamat Utama',
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: AppDimens.fontTitle),
                   ),
                   activeColor: AppTheme.primaryColor,
                   value: _isDefault,
@@ -223,17 +224,17 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
                   },
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppDimens.space24),
 
               // Tombol Simpan
               SizedBox(
-                height: 48,
+                height: 44,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primaryColor,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(AppDimens.radiusSm),
                     ),
                   ),
                   onPressed: _isLoading ? null : _submitAddress,
@@ -248,7 +249,7 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
                         )
                       : const Text(
                           'Simpan Alamat',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: AppDimens.fontTitle, fontWeight: FontWeight.bold),
                         ),
                 ),
               ),
