@@ -10,7 +10,7 @@ Aplikasi **Shoope** adalah aplikasi mobile e-commerce clone dari **Shopee** yang
 
 ---
 
-## Anggota Kelompok
+## Anggota Kelompok 6 (SI 2024 E)
 
 | NAMA                             |     NIM     |
 
