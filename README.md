@@ -12,11 +12,15 @@ Aplikasi **Shoope** adalah aplikasi mobile e-commerce clone dari **Shopee** yang
 
 ## Anggota Kelompok
 
-| Nama | NIM |
-| FATIH RAHMAN AL-BANTANI | 24051214148 |
-| NARENDRA RIO NOVENDI | 24051214160 |
-| DANIEL REVANKA ARDIANTO PUTRA | 24051214170 |
-| MOH VIKI NUR ARIFIN | 24051214171 |
+| NAMA                             |     NIM     |
+
+| FATIH RAHMAN AL-BANTANI          | 24051214148 |
+
+| NARENDRA RIO NOVENDI             | 24051214160 |
+
+| DANIEL REVANKA ARDIANTO PUTRA    | 24051214170 |
+
+| MOH VIKI NUR ARIFIN              | 24051214171 |
 
 ---
 
