@@ -22,19 +22,19 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final ProductService _productService = ProductService();
-  final ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController(); //		ScrollController untuk mendeteksi posisi scroll (dasar infinite scroll).
 
-  List<Category> _categories = [];
+  List<Category> _categories = []; //		State kategori: daftar dan penanda loading.
   bool _isLoadingCategories = true;
 
-  final List<Product> _products = [];
+  final List<Product> _products = []; // State produk: daftar yang sudah dimuat, halaman sekarang, total halaman, serta dua penanda loading terpisah (muat awal dan muat lanjutan) supaya spinner tampil di tempat yang tepat.
   int _currentPage = 1;
   int _totalPages = 1;
   bool _isLoadingProducts = false;
   bool _isLoadingMore = false;
   String? _productErrorMessage;
 
-  @override
+  @override //	initState: pasang listener scroll, lalu jadwalkan pemuatan data awal setelah frame pertama selesai digambar (baris 41).
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // Deteksi scroll mendekati dasar untuk infinite scroll
-  void _onScroll() {
+  void _onScroll() { //	Infinite scroll: kalau posisi tinggal 300 piksel dari dasar, tidak sedang memuat, dan halaman belum habis, muat halaman berikutnya.
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 300) {
       if (!_isLoadingMore &&
@@ -62,13 +62,13 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // Muat data awal kategori, produk, dan perbarui jumlah keranjang
-  Future<void> _loadInitialData() async {
+ //Muat data awal: perbarui jumlah keranjang untuk badge, lalu Future.wait memuat kategori dan produk bersamaan supaya lebih cepat.
+  Future<void> _loadInitialData() async { 
     context.read<CartProvider>().refreshCount();
     await Future.wait([_loadCategories(), _loadProducts(refresh: true)]);
   }
 
-  Future<void> _loadCategories() async {
+  Future<void> _loadCategories() async { //	Ambil kategori dari API. Kalau gagal, loading dihentikan dan tampilan menunjukkan Kategori tidak tersedia.
     try {
       final cats = await _productService.getCategories();
       if (mounted) {
@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> _loadProducts({bool refresh = false}) async {
+  Future<void> _loadProducts({bool refresh = false}) async { //	Muat halaman 1 (10 produk) dan kosongkan daftar lama. Kalau gagal, tampil pesan error dengan tombol Coba Lagi.
     if (refresh) {
       setState(() {
         _isLoadingProducts = true;
@@ -116,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> _loadMoreProducts() async {
+  Future<void> _loadMoreProducts() async { //Muat halaman berikutnya dan tambahkan (addAll) ke daftar yang sudah ada, bukan menggantikannya.
     setState(() {
       _isLoadingMore = true;
     });
@@ -145,14 +145,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // Buka halaman dan refresh keranjang saat kembali
-  Future<void> _navigateTo(Widget screen) async {
+  Future<void> _navigateTo(Widget screen) async { //	Buka layar lain, lalu saat kembali segarkan jumlah keranjang supaya badge selalu akurat.
     await Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
     if (mounted) {
       context.read<CartProvider>().refreshCount();
     }
   }
 
-  void _showComingSoon() {
+  void _showComingSoon() { //	Dipakai semua elemen statis (kamera, chat, menu ikon, strip) untuk menampilkan Segera hadir.
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Segera hadir'),
@@ -164,12 +164,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: RefreshIndicator(
+      body: RefreshIndicator( //	RefreshIndicator: tarik layar ke bawah untuk memuat ulang kategori dan produk.
         color: AppTheme.primaryColor,
         onRefresh: () async {
           await _loadInitialData();
         },
-        child: CustomScrollView(
+        child: CustomScrollView( //	CustomScrollView menggabungkan beberapa sliver (header, banner, kategori, grid) dalam satu area scroll.
           controller: _scrollController,
           slivers: [
             // Header oranye pinned dengan kotak pencarian dan ikon aksi
@@ -184,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   // Kotak pencarian putih
                   Expanded(
-                    child: GestureDetector(
+                    child: GestureDetector( //Kotak pencarian hanyalah tombol: ketuk membuka SearchScreen (baris 189).
                       onTap: () {
                         _navigateTo(const SearchScreen());
                       },
@@ -232,7 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(width: AppDimens.space8),
 
                   // Ikon Keranjang dengan badge
-                  Consumer<CartProvider>(
+                  Consumer<CartProvider>( //Consumer pada CartProvider: hanya bagian badge ini yang dibangun ulang saat jumlah keranjang berubah.
                     builder: (context, cartProvider, child) {
                       return Stack(
                         clipBehavior: Clip.none,
@@ -249,7 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               _navigateTo(const CartScreen());
                             },
                           ),
-                          if (cartProvider.cartCount > 0)
+                          if (cartProvider.cartCount > 0) //	Badge hanya tampil kalau jumlah lebih dari 0, dan ditulis 99+ kalau lebih dari 99 (baris 268).
                             Positioned(
                               top: -4,
                               right: -4,
@@ -298,7 +298,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            // Strip 3 kolom statis
+            // Strip 3 kolom statis (segera hadir)
             SliverToBoxAdapter(
               child: Container(
                 margin: const EdgeInsets.symmetric(
@@ -473,7 +473,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           horizontal: AppDimens.pagePadding,
                         ),
                         child: Row(
-                          children: _categories.map((cat) {
+                          children: _categories.map((cat) { 
+                            // saat  kategori diKetuk membuka SearchScreen dengan categoryId dan nama kategori,
+                            // jadi layar pencarian dipakai ulang untuk menelusuri kategori.
                             return GestureDetector(
                               onTap: () {
                                 _navigateTo(
@@ -546,7 +548,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            // Grid produk 2 kolom atau indikator error/loading
+            // Area produk punya tiga kondisi: loading (baris 550), error dengan tombol Coba Lagi (baris 561), atau grid produk (baris 581).
             if (_isLoadingProducts)
               const SliverToBoxAdapter(
                 child: Padding(
@@ -584,7 +586,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   horizontal: AppDimens.space8,
                   vertical: AppDimens.space8,
                 ),
-                sliver: SliverGrid(
+                sliver: SliverGrid( //SliverGrid 2 kolom (crossAxisCount 2). childAspectRatio 0.58 mengatur proporsi kartu. Kartu dibuat malas lewat builder (baris 594), jadi hanya yang terlihat yang digambar.
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     childAspectRatio: 0.58,
@@ -593,7 +595,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   delegate: SliverChildBuilderDelegate((context, index) {
                     final product = _products[index];
-                    return ProductCard(
+                    return ProductCard( //	ProductCard adalah widget yang dipakai ulang. Ketuk kartu membuka ProductDetailScreen dengan id produk (baris 599).
                       product: product,
                       onTap: () {
                         _navigateTo(ProductDetailScreen(productId: product.id));
@@ -604,7 +606,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
 
               // Loading indikator di bagian bawah saat scroll memuat data lanjutan
-              if (_isLoadingMore)
+              if (_isLoadingMore) //	Spinner kecil di dasar daftar saat memuat halaman lanjutan.
                 const SliverToBoxAdapter(
                   child: Padding(
                     padding: EdgeInsets.symmetric(

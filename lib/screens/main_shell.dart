@@ -18,6 +18,7 @@ class MainShell extends StatefulWidget {
 
 class _MainShellState extends State<MainShell> {
   int _currentIndex = 0;
+
   final ValueNotifier<int> _tabSignal = ValueNotifier<int>(0);
   late final List<Widget> _screens;
 
@@ -25,6 +26,7 @@ class _MainShellState extends State<MainShell> {
   void initState() {
     super.initState();
     _tabSignal.value = _currentIndex;
+
     _screens = [
       const HomeScreen(),
       const LiveScreen(),

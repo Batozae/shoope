@@ -107,7 +107,7 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  // Tambah produk ke keranjang belanja
+  // aplikasi mengirim ID produk dan jumlah yang dipilih ke endpoint keranjang, kemudian memperbarui jumlah item keranjang.
   Future<void> addToCart(int productId, int quantity) async {
     await _apiClient.post(
       '/cart',
@@ -153,7 +153,7 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Toggle seleksi semua item di keranjang
+  // fungsi ini memilih seluruh item jika belum semuanya terpilih, atau membatalkan seluruh pilihan jika semuanya sudah terpilih.
   void toggleAll() {
     if (allSelected) {
       _selectedIds.clear();
@@ -165,7 +165,7 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Update kuantitas item di keranjang
+  // Update kuantitas item di keranjang pembatasan jumlah berdasarkan stok
   Future<void> updateQuantity(int productId, int quantity) async {
     // Cari item di state lokal untuk validasi batas 1..stok
     CartItem? targetItem;
@@ -202,7 +202,7 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Hapus beberapa item dari keranjang
+  // penghapusan item melalui API.
   Future<void> removeItems(List<int> ids) async {
     for (final id in ids) {
       try {

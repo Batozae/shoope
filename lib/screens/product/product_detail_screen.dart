@@ -364,6 +364,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   height: screenWidth,
                   child: Stack(
                     children: [
+                      // PageView.builder memungkinkan pengguna menggeser gambar produk, sedangkan onPageChanged memperbarui indeks gambar aktif.
                       PageView.builder(
                         controller: _pageController,
                         itemCount: imageList.length,
@@ -837,6 +838,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   alignment: Alignment.center,
                   child: Text(
                     isOutOfStock ? 'Stok Habis' : 'Masukkan Keranjang',
+                    // Penjelasan: tombol tidak menjalankan aksi saat stok habis. Label tombol juga berubah menjadi Stok Habis.
                     style: TextStyle(
                       color: isOutOfStock ? Colors.grey[600] : AppTheme.primaryColor,
                       fontSize: AppDimens.fontBody,

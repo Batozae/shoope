@@ -20,13 +20,17 @@ class _SplashScreenState extends State<SplashScreen> {
     _checkAuth();
   }
 
+  //Dipanggil saat splash muncul: mengecek apakah user masih punya sesi login yang valid.
   Future<void> _checkAuth() async {
+    //	tryAutoLogin membaca token yang tersimpan lalu memverifikasinya ke server (detailnya di auth_provider).
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    //mounted memastikan layar masih ada setelah proses async selesai, supaya navigasi tidak error.
     final isLoggedIn = await authProvider.tryAutoLogin();
-
+    //Sudah login: masuk ke MainShell (menu utama). pushReplacement mengganti splash, jadi tombol Back tidak kembali ke splash.
     if (!mounted) return;
 
     if (isLoggedIn) {
+      //	Belum login atau token tidak valid: arahkan ke LoginScreen.
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const MainShell()),
       );

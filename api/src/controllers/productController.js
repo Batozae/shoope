@@ -9,7 +9,7 @@ const SORT_MAP = {
   popular:    'p.sold_count DESC',
 };
 
-// Kolom SELECT produk yang disertakan di list maupun detail (termasuk JOIN shops)
+
 const PRODUCT_SELECT = `
   p.id, p.name, p.description, p.price, p.stock,
   p.image_url, p.rating, p.rating_count, p.sold_count, p.created_at,
@@ -56,10 +56,9 @@ const getAllProducts = async (req, res, next) => {
       conditions.push('p.category_id = ?');
       params.push(categoryId);
     }
-
+    // Hitung total data dengan filter yang sama, lalu total halaman = ceil(total / limit) (baris 68). 
+    // Dengan ini Flutter tahu kapan harus berhenti memuat.
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
-
-    // --- Hitung total data untuk paginasi ---
     const [countRows] = await pool.execute(
       `SELECT COUNT(*) AS total FROM products p ${whereClause}`,
       params

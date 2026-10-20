@@ -131,7 +131,7 @@ const login = async (req, res, next) => {
       });
     }
 
-    // Buat token JWT
+    // 	jwt.sign membuat token berisi id dan email, ditandatangani JWT_SECRET, dan kedaluwarsa sesuai JWT_EXPIRES_IN (bawaan 7 hari).
     const token = jwt.sign(
       { id: user.id, email: user.email },
       process.env.JWT_SECRET,

@@ -8,8 +8,10 @@ import '../../theme/app_theme.dart';
 import '../../widgets/product_card.dart';
 import '../product/product_detail_screen.dart';
 
-// Layar Pencarian Produk dengan Filter Sort dan Kategori (dimensi visual konsisten)
+
 class SearchScreen extends StatefulWidget {
+// Satu layar untuk dua kebutuhan: pencarian bebas (dari kotak cari) dan penelusuran kategori (dari Beranda), 
+// dibedakan lewat parameter opsional categoryId dan title.
   final String? initialQuery;
   final int? categoryId;
   final String? title;
@@ -38,12 +40,12 @@ class _SearchScreenState extends State<SearchScreen> {
   String? _errorMessage;
 
   // Nilai sort: 'newest', 'popular', 'price_asc', 'price_desc'
-  String _currentSort = 'newest';
+  String _currentSort = 'newest'; //	Nilai sort saat ini: newest, popular, price_asc, atau price_desc. Sama persis dengan kata kunci di whitelist server.
 
   @override
   void initState() {
     super.initState();
-    _searchController = TextEditingController(text: widget.initialQuery ?? '');
+    _searchController = TextEditingController(text: widget.initialQuery ?? ''); //Isi awal kotak pencarian, lalu langsung memuat produk (baris 48).
     _scrollController.addListener(_onScroll);
     _fetchProducts(reset: true);
   }
@@ -56,7 +58,7 @@ class _SearchScreenState extends State<SearchScreen> {
     super.dispose();
   }
 
-  void _onScroll() {
+  void _onScroll() { //	Infinite scroll, logikanya sama dengan Beranda.
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 300) {
       if (!_isLoadingMore && !_isLoading && _currentPage < _totalPages) {
@@ -65,7 +67,7 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
-  Future<void> _fetchProducts({bool reset = false}) async {
+  Future<void> _fetchProducts({bool reset = false}) async { //	_fetchProducts: ambil halaman 1. Parameter yang dikirim: teks pencarian (baris 78), kategori (baris 81), dan sort (baris 82). reset true mengosongkan daftar lama.
     if (reset) {
       setState(() {
         _isLoading = true;
@@ -93,7 +95,7 @@ class _SearchScreenState extends State<SearchScreen> {
           _isLoading = false;
         });
       }
-    } catch (e) {
+    } catch (e) { //	Kalau gagal, pesan dari ApiException ditampilkan. Selain itu pakai pesan umum.
       if (mounted) {
         setState(() {
           _errorMessage = e is ApiException
@@ -105,7 +107,7 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
-  Future<void> _loadMoreProducts() async {
+  Future<void> _loadMoreProducts() async { //	_loadMoreProducts: ambil halaman berikutnya dengan filter yang sama dan tambahkan ke daftar.
     setState(() {
       _isLoadingMore = true;
     });
@@ -139,7 +141,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   // Ganti urutan sort
-  void _changeSort(String sortKey) {
+  void _changeSort(String sortKey) { //Ganti urutan: ubah nilai sort lalu muat ulang dari halaman 1. Kalau sort yang sama diketuk lagi, tidak terjadi apa-apa.
     if (_currentSort == sortKey) return;
     setState(() {
       _currentSort = sortKey;
@@ -148,7 +150,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   // Toggle sort harga antara price_asc dan price_desc
-  void _togglePriceSort() {
+  void _togglePriceSort() { //		Tombol Harga bergantian antara termurah (price_asc) dan termahal (price_desc).
     if (_currentSort == 'price_asc') {
       _changeSort('price_desc');
     } else {
@@ -180,7 +182,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 widget.categoryId == null &&
                 (widget.initialQuery == null || widget.initialQuery!.isEmpty),
             textInputAction: TextInputAction.search,
-            onSubmitted: (_) => _fetchProducts(reset: true),
+            onSubmitted: (_) => _fetchProducts(reset: true), 	//Pencarian dijalankan saat user menekan enter di keyboard.
             style: const TextStyle(fontSize: AppDimens.fontTitle),
             decoration: InputDecoration(
               hintText: widget.title != null
@@ -222,7 +224,7 @@ class _SearchScreenState extends State<SearchScreen> {
       body: Column(
         children: [
           // Baris filter sort
-          Container(
+          Container( //Baris tombol urutan: Terbaru, Terlaris, dan Harga (dengan ikon panah naik atau turun).
             color: Colors.white,
             padding: const EdgeInsets.symmetric(
               horizontal: AppDimens.pagePadding,
@@ -311,7 +313,7 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody() { //	_buildBody menangani empat kondisi: loading (baris 315), error dengan Coba Lagi (baris 321), hasil kosong Produk tidak ditemukan (baris 344), dan grid hasil (baris 369).
     if (_isLoading) {
       return const Center(
         child: CircularProgressIndicator(color: AppTheme.primaryColor),
@@ -378,7 +380,7 @@ class _SearchScreenState extends State<SearchScreen> {
               mainAxisSpacing: AppDimens.space8,
               crossAxisSpacing: AppDimens.space8,
             ),
-            delegate: SliverChildBuilderDelegate((context, index) {
+            delegate: SliverChildBuilderDelegate((context, index) { //		Grid hasil memakai ProductCard yang sama dengan Beranda, jadi tampilannya konsisten dan tidak ada kode ganda.
               final product = _products[index];
               return ProductCard(
                 product: product,
@@ -412,7 +414,7 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildSortButton({
+  Widget _buildSortButton({ //	Helper tombol urutan: tampilan aktif atau tidak aktif ditentukan oleh isActive.
     required String label,
     required bool isActive,
     required VoidCallback onTap,

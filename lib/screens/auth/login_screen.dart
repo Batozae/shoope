@@ -15,18 +15,19 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  //	GlobalKey untuk Form, dipakai memicu validasi semua field sekaligus.
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
-
+//	dispose: controller dibersihkan saat layar ditutup untuk mencegah kebocoran memori.
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
-
+  //	_handleLogin: validasi form dulu. Kalau gagal, berhenti tanpa menghubungi server.
   Future<void> _handleLogin() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -34,13 +35,17 @@ class _LoginScreenState extends State<LoginScreen> {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
 
+  //	Panggil login di provider. Kalau sukses, 
+  //layar diganti ke MainShell (baris 43). pushReplacement membuat tombol Back tidak kembali ke login.
     try {
       await authProvider.login(email, password);
-
+    
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const MainShell()),
       );
+      // jika ada eror pesan dari server ditampilkan di SnackBar (misalnya Email atau password salah). 
+      // Error lain memakai pesan umum (baris 52).
     } on ApiException catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -60,6 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+	// Provider.of tanpa listen: false membuat layar ikut dibangun ulang saat isLoading berubah.
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
@@ -117,6 +123,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         prefixIcon: Icon(Icons.email_outlined),
                         border: OutlineInputBorder(),
                       ),
+            // Validator email: tidak boleh kosong dan harus cocok format (regex). 
+            //Validasi di sisi klien memberi umpan balik cepat tanpa request ke server.
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return 'Email wajib diisi.';
@@ -163,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(
                       height: 48,
                       child: ElevatedButton(
-                        onPressed: isLoading ? null : _handleLogin,
+                        onPressed: isLoading ? null : _handleLogin, // Saat loading, onPressed bernilai null sehingga tombol nonaktif dan tidak bisa diklik dua kali. 
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppTheme.primaryColor,
                           foregroundColor: Colors.white,
@@ -191,7 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 24),
 
-                    // Tautan Daftar Akun
+                    // 	Tautan Daftar membuka RegisterScreen.
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

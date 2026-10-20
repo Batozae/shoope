@@ -32,7 +32,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  Future<void> _handleRegister() async {
+  Future<void> _handleRegister() async { //	_handleRegister: validasi form, buat akun, lalu langsung login.
     if (!_formKey.currentState!.validate()) return;
 
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -43,10 +43,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     try {
       // Panggil register lalu otomatis login
       await authProvider.register(name, email, password);
-      await authProvider.login(email, password);
+      await authProvider.login(email, password); 
+    // Setelah akun dibuat, langsung login otomatis supaya user tidak perlu mengetik ulang. Pada langkah ini token sudah didapat.
 
       if (!mounted) return;
-      Navigator.of(context).pushAndRemoveUntil(
+      Navigator.of(context).pushAndRemoveUntil( //	pushAndRemoveUntil menghapus semua layar sebelumnya (login dan daftar) dari tumpukan navigasi, jadi Back tidak kembali ke form.
         MaterialPageRoute(builder: (_) => const MainShell()),
         (route) => false,
       );
@@ -151,7 +152,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       },
                     ),
                   ),
-                  validator: (value) {
+                  validator: (value) { //Validasi password minimal 6 karakter, sama dengan aturan di server.
                     if (value == null || value.isEmpty) {
                       return 'Password wajib diisi.';
                     }
@@ -183,7 +184,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       },
                     ),
                   ),
-                  validator: (value) {
+                  validator: (value) { //	Konfirmasi password dibandingkan dengan isi field password. Kalau beda, ditolak.
                     if (value == null || value.isEmpty) {
                       return 'Konfirmasi password wajib diisi.';
                     }

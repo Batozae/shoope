@@ -9,7 +9,7 @@ import 'theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeDateFormatting('id_ID', null);
+  await initializeDateFormatting('id_ID', null); //// Menyiapkan data format tanggal bahasa Indonesia (id_ID) sebelum aplikasi berjalan.
   runApp(const MyApp());
 }
 
@@ -19,6 +19,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+      //	MultiProvider: tiga state global (Auth, Cart, Notification) dibuat sekali di akar aplikasi, 
+  //sehingga semua layar bisa membaca dan mendengarkan datanya tanpa dioper satu per satu lewat constructor.
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
@@ -27,7 +29,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Shoope',
-        debugShowCheckedModeBanner: false,
+        debugShowCheckedModeBanner: false, //Layar pertama adalah SplashScreen, bukan langsung login. Splash yang memutuskan user diarahkan ke mana.
         theme: AppTheme.lightTheme,
         home: const SplashScreen(),
       ),

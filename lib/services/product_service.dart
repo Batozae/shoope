@@ -14,11 +14,11 @@ class ProductListResult {
 }
 
 // Layanan API untuk produk dan kategori
-class ProductService {
+class ProductService { //Service adalah lapisan antara layar dan ApiClient: layar cukup memanggil method, tanpa tahu detail HTTP.
   final ApiClient _apiClient = ApiClient();
 
   // Ambil daftar semua kategori
-  Future<List<Category>> getCategories() async {
+  Future<List<Category>> getCategories() async { //	getCategories: endpoint publik (withAuth false). Hasil JSON diubah menjadi daftar objek Category.
     final data = await _apiClient.get('/categories', withAuth: false);
     if (data is List) {
       return data
@@ -29,14 +29,14 @@ class ProductService {
   }
 
   // Ambil daftar produk dengan filter, sort, dan paginasi
-  Future<ProductListResult> getProducts({
+  Future<ProductListResult> getProducts({ //	getProducts: satu method dipakai Beranda dan Pencarian, dengan parameter opsional search, categoryId, sort, page, dan limit.
     String? search,
     int? categoryId,
     String? sort,
     int page = 1,
     int limit = 10,
   }) async {
-    final queryParams = <String, String>{
+    final queryParams = <String, String>{ //	Query selalu memuat page dan limit. Search, kategori, dan sort ditambahkan hanya kalau diisi (baris 44 sampai 52).
       'page': page.toString(),
       'limit': limit.toString(),
     };
@@ -51,12 +51,12 @@ class ProductService {
       queryParams['sort'] = sort;
     }
 
-    final queryString = Uri(queryParameters: queryParams).query;
+    final queryString = Uri(queryParameters: queryParams).query; //	Uri(queryParameters) membuat query string yang aman, karakter khusus di-encode otomatis.
     final endpoint = '/products?$queryString';
 
     final data = await _apiClient.get(endpoint, withAuth: false) as Map<String, dynamic>;
 
-    final rawItems = data['items'] as List? ?? [];
+    final rawItems = data['items'] as List? ?? []; //Ubah JSON menjadi objek Product. Total halaman diambil dari pagination (baris 64) dengan konversi aman.
     final items = rawItems
         .map((item) => Product.fromJson(item as Map<String, dynamic>))
         .toList();
@@ -79,3 +79,4 @@ class ProductService {
   }
 }
 
+//

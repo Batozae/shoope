@@ -5,7 +5,8 @@ import 'package:http/http.dart' as http;
 import '../config/api_config.dart';
 import 'token_storage.dart';
 
-// Exception kustom untuk menangani error response atau koneksi API
+// 	ApiException: error kustom yang membawa pesan dan status code. 
+// Pesannya berasal dari server, jadi bisa langsung ditampilkan ke user.
 class ApiException implements Exception {
   final String message;
   final int? statusCode;
@@ -18,10 +19,12 @@ class ApiException implements Exception {
 
 // Klien HTTP untuk komunikasi dengan backend API
 class ApiClient {
+  //Batas waktu 10 detik per request, supaya aplikasi tidak menggantung kalau server mati.
   final TokenStorage _tokenStorage = TokenStorage();
   static const Duration _timeoutDuration = Duration(seconds: 10);
 
-  // Buat header request umum termasuk Bearer token jika ada
+  // 	Menyusun header request: format JSON, dan kalau withAuth true ditambahkan Authorization: 
+  // Bearer token dari penyimpanan. Request publik (login, daftar produk) memakai withAuth false.
   Future<Map<String, String>> _getHeaders({bool withAuth = true}) async {
     final headers = <String, String>{
       'Content-Type': 'application/json',
@@ -36,7 +39,8 @@ class ApiClient {
     }
 
     return headers;
-  }
+  } //Semua response melewati sini. Server selalu membalas format success, message, 
+  // data. Kalau success false atau status 400 ke atas, dilempar ApiException berisi pesan server.
 
   // Parse response JSON dan verifikasi status serta flag success
   dynamic _handleResponse(http.Response response) {
@@ -56,6 +60,7 @@ class ApiClient {
       final String message = body['message'] ?? 'Terjadi kesalahan.';
 
       if (!success || response.statusCode >= 400) {
+        //Kalau sukses, yang dikembalikan hanya isi data, jadi pemanggil tidak perlu membuka pembungkus response lagi.
         throw ApiException(message, response.statusCode);
       }
 
@@ -65,7 +70,8 @@ class ApiClient {
     if (response.statusCode >= 400) {
       throw ApiException('Terjadi kesalahan pada server.', response.statusCode);
     }
-
+    //	Pembungkus request: error jaringan, timeout,
+    // dan koneksi gagal disamakan menjadi satu pesan, yaitu Tidak dapat terhubung ke server.
     return body;
   }
 
@@ -80,6 +86,8 @@ class ApiClient {
     } on http.ClientException {
       throw ApiException('Tidak dapat terhubung ke server.');
     } catch (e) {
+      //		Metode get, post, put, delete punya pola sama: 
+      //    susun URL dari baseUrl + endpoint, kirim lewat _safeRequest, proses hasilnya di _handleResponse.
       if (e is ApiException) rethrow;
       throw ApiException('Tidak dapat terhubung ke server.');
     }
